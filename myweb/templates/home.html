@@ -1,7 +1,13 @@
+<!-- base/templates/home.html -->
+
 {% extends 'main.html' %}
+{% load static %}
+
+
+{% block title %}Home - My Project{% endblock %}
 
 {% block content %}
-
-<h1>Home</h1>
-
-{% endblock%}
+<h1>Welcome to the Home Page</h1>
+<p>This is the home page content.</p>
+<img src="{% static 'images/todo.png' %}" alt="Home Image">
+{% endblock %}
