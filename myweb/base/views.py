@@ -6,6 +6,10 @@ from django.contrib.auth.decorators import login_required
 
 
 
+
+
+
+
 def home(request):
     if request.user.is_authenticated:
         return render(request, 'base/home.html')  # Make sure this path matches your template location
@@ -44,6 +48,10 @@ def logout_user(request):
 
 def profile(request):
     return render(request, 'base/profile.html')
+
+def add_task(request):
+    return render(request, 'base/add_task.html')
+
 
 
 
