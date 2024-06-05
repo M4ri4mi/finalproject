@@ -1,17 +1,105 @@
 {% extends 'main.html' %}
 {% load static %}
 
+{% block extra_scripts %}
+<!-- No external JavaScript file is being linked here -->
+{% endblock %}
+
 {% block title %}Home - My Project{% endblock %}
 
 {% block content %}
+<style>
+/* Popup container */
+.popup {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Popup content */
+.popup-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+</style>
+
 <h1>Welcome to the Home Page</h1>
 <p>This is the home page content for logged-in users.</p>
 {% if user.is_authenticated %}
     <a href="{% url 'profile' %}" class="profile-link"><h1>Profile</h1></a>
-    <a href="{% url 'add_task' %}" class="addtask-link"><h1>Add Task</h1></a>
-    <a href = "{% url 'logout' %}"><h1>LOG OUT</h1></a>
+
+    <!-- Add Task Button -->
+    <button id="addTaskBtn">Add Task</button>
+
+    <!-- The Popup -->
+    <div id="taskPopup" class="popup">
+        <div class="popup-content">
+            <span class="close">&times;</span>
+            <form id="addTaskForm" action="/add-task" method="post">
+                <label for="taskName">Task Name:</label>
+                <input type="text" id="taskName" name="taskName" required>
+                <label for="taskDescription">Description:</label>
+                <textarea id="taskDescription" name="taskDescription" required></textarea>
+                <button type="submit">Add Task</button>
+            </form>
+        </div>
+    </div>
+
+    <a href="{% url 'logout' %}"><h1>LOG OUT</h1></a>
 {% endif %}
+
+<!-- Embedded JavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    console.log('JavaScript is running'); // Debugging line
+
+    var popup = document.getElementById("taskPopup");
+    var btn = document.getElementById("addTaskBtn");
+    var span = document.getElementsByClassName("close")[0];
+
+    console.log(popup, btn, span); // Debugging: Check if elements are correctly selected
+
+    btn.onclick = function() {
+      console.log('Add Task button clicked'); // Debugging: Check if button click is detected
+      popup.style.display = "block";
+    }
+
+    span.onclick = function() {
+      console.log('Close button clicked'); // Debugging: Check if close button click is detected
+      popup.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+      if (event.target == popup) {
+        console.log('Outside click detected'); // Debugging: Check if outside click is detected
+        popup.style.display = "none";
+      }
+    }
+});
+</script>
 {% endblock %}
-
-
-
