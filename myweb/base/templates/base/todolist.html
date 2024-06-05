@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple To-Do List</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            font-size: 2em;
+            margin-right: 10px;
+        }
+        .add-task {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .add-task input[type="text"] {
+            flex: 1;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .add-task button {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+        .task-list {
+            list-style: none;
+            padding: 0;
+        }
+        .task-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .task-list li.completed {
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>To-Do List</h1>
+        </div>
+    <div class="add-task">
+        <input type="text" id="new-task" placeholder="Add a new task">
+        <button onclick="addTask()">Add</button>
+    </div>
+    <ul class="task-list">
+        </ul>
+
+    <script>
+        function addTask() {
+            // Get the task text from the input field
+            var taskText = document.getElementById("new-task").value;
+
+            // Clear the input field
+            document.getElementById("new-task").value = "";
+
+            // Create a new list item element
+            var newTask = document.createElement("li");
+            newTask.innerText = taskText;
+
+            // Add a click event listener to mark the task as completed
+            newTask.addEventListener("click", function() {
+                this.classList.toggle("completed");
+            });
+
+            // Add the new list item to the task list
+            var taskList = document.querySelector(".task-list");
+            taskList.appendChild(newTask);
+        }
+    </script>
+</body>
+</html>
