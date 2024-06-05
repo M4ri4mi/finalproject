@@ -6,9 +6,13 @@ from django.contrib.auth.decorators import login_required
 
 
 
-
 def home(request):
-    return render(request, 'base/home.html')
+    if request.user.is_authenticated:
+        return render(request, 'base/home.html')  # Make sure this path matches your template location
+    else:
+        return render(request, 'base/existing_page.html')  # Make sure this path matches your template location
+
+  
 
 def login_view(request):
     if request.method == "POST":
@@ -35,6 +39,10 @@ def login_view(request):
 def logout_user(request):
     logout(request)
     return redirect('home')
+
+
+
+
 
 
 
