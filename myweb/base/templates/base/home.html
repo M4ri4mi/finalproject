@@ -55,7 +55,7 @@
     <ul>
         {% for task in tasks %}
         <li>
-            <a href="{% url 'task_detail' task.id %}"><strong>{{ task.title }}</strong></a>: {{ task.description }} (Due: {{ task.due_date }})
+            <a href="{% url 'task_detail' task.id %}"><strong>{{ task.title }}</strong></a>: (Due: {{ task.due_date }})
             <a href="{% url 'task_update' task.id %}">Edit</a>
             <a href="{% url 'task_delete' task.id %}">Delete</a>
         </li>
@@ -82,7 +82,7 @@
     <ul>
         {% for plan in plans %}
         <li>
-            <a href="{% url 'update-plan' plan.id %}"><strong>{{ plan.title }}</strong></a>: {{ plan.description }} (Due: {{ plan.due_date }})
+            <strong>{{ plan.title }}</strong>
             <a href="{% url 'update-plan' plan.id %}">Edit</a>
             <a href="{% url 'delete-plan' plan.id %}">Delete</a>
         </li>
@@ -150,6 +150,8 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 {% endblock %}
+
+
 
 
 

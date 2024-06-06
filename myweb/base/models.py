@@ -14,8 +14,6 @@ class Task(models.Model):
 
 class Plan(models.Model):
     title = models.CharField(max_length=100)
-    description = models.TextField(blank=True, null=True)
-    due_date = models.DateField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -30,5 +28,7 @@ class Profile(models.Model):
 
     def __str__(self):
         return self.user.username
+
+
 
 

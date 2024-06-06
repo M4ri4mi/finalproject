@@ -14,7 +14,7 @@ class TaskForm(forms.ModelForm):
 class PlanForm(forms.ModelForm):
     class Meta:
         model = Plan
-        fields = ['title', 'description', 'due_date']
+        fields = ['title']
 
 class ProfileForm(forms.ModelForm):
     email = forms.EmailField(required=True)

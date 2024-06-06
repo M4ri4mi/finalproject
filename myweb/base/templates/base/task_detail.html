@@ -1,16 +1,16 @@
+<!-- base/templates/base/task_detail.html -->
 {% extends 'main.html' %}
-{% load static %}
 
 {% block title %}Task Detail{% endblock %}
 
 {% block content %}
 <h1>{{ task.title }}</h1>
-<p>{{ task.description }}</p>
-<p>Due date: {{ task.due_date }}</p>
-<a href="{% url 'task_update' task.id %}">Edit</a>
-<a href="{% url 'task_delete' task.id %}">Delete</a>
-<a href="{% url 'home' %}">Back to Task List</a>
+<p><strong>Due Date:</strong> {{ task.due_date }}</p>
+<p><strong>Description:</strong> {{ task.description }}</p>
+
+<a href="{% url 'home' %}">Back to Home</a>
 {% endblock %}
+
 
 
 
