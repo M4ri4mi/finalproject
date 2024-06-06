@@ -1,10 +1,12 @@
+# base/views.py
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from .models import Task
-from .forms import TaskForm
+from .models import Task, Plan
+from .forms import TaskForm, PlanForm
 from django.contrib.auth.forms import UserCreationForm
 
 def home(request):
@@ -12,51 +14,38 @@ def home(request):
         if request.method == 'POST':
             form = TaskForm(request.POST)
             if form.is_valid():
-                form.save()
+                task = form.save(commit=False)
+                task.user = request.user  # Set the user to the currently logged-in user
+                task.save()
+                messages.success(request, 'Task added successfully!')
                 return redirect('home')
         else:
             form = TaskForm()
+            plan_form = PlanForm()
 
-        tasks = Task.objects.all()
-        return render(request, 'base/home.html', {'tasks': tasks, 'form': form})
+        tasks = Task.objects.filter(user=request.user)
+        plans = Plan.objects.filter(user=request.user)
+        return render(request, 'base/home.html', {'tasks': tasks, 'form': form, 'plans': plans, 'plan_form': plan_form})
     else:
         return render(request, 'base/existing_page.html')
 
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib import messages
-
 def login_view(request):
-    page = "login"
     if request.method == "POST":
         username = request.POST.get('username')
         password = request.POST.get('password')
-
-        try:
-            user = User.objects.get(username=username)
-        except User.DoesNotExist:
-            messages.error(request, "The user does not exist")
-            return render(request, 'base/login.html', {'page': page})
-
         user = authenticate(request, username=username, password=password)
-        
         if user is not None:
             login(request, user)
             return redirect('home')
         else:
-            messages.error(request, 'Incorrect Password!')
-
-    context = {"page": page}
-    return render(request, 'base/login.html', context)
+            messages.error(request, 'Incorrect username or password.')
+    return render(request, 'base/login.html', {'page': 'login'})
 
 def logout_user(request):
     logout(request)
     return redirect('home')
 
 def register_page(request):
-    page = "register"
     form = UserCreationForm()
     if request.method == "POST":
         form = UserCreationForm(request.POST)
@@ -67,17 +56,11 @@ def register_page(request):
             login(request, user)
             return redirect('home')
         else:
-            messages.error(request, "An Error Occurred")
-
-    return render(request, 'base/login.html', {"form": form, "page": page})
-
-
+            messages.error(request, "An error occurred during registration.")
+    return render(request, 'base/login.html', {'page': 'register', 'form': form})
 
 def profile(request):
     return render(request, 'base/profile.html')
-
-
-
 
 @login_required
 def task_detail(request, task_id):
@@ -91,6 +74,7 @@ def task_update(request, task_id):
         form = TaskForm(request.POST, instance=task)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Task updated successfully!')
             return redirect('home')
     else:
         form = TaskForm(instance=task)
@@ -101,16 +85,53 @@ def task_delete(request, task_id):
     task = get_object_or_404(Task, id=task_id)
     if request.method == 'POST':
         task.delete()
+        messages.success(request, 'Task deleted successfully!')
         return redirect('home')
     return render(request, 'base/task_confirm_delete.html', {'task': task})
 
+# Plan CRUD
+@login_required(login_url='login')
+def create_plan(request):
+    form = PlanForm()
+    if request.method == 'POST':
+        form = PlanForm(request.POST)
+        if form.is_valid():
+            plan = form.save(commit=False)
+            plan.user = request.user  # Set the user to the currently logged-in user
+            plan.save()
+            messages.success(request, 'Plan created successfully!')
+            return redirect('home')
+    context = {'form': form}
+    return render(request, 'base/plan_form.html', context)
 
+@login_required(login_url='login')
+def update_plan(request, pk):
+    plan = get_object_or_404(Plan, id=pk)
+    form = PlanForm(instance=plan)
+    if request.method == 'POST':
+        form = PlanForm(request.POST, instance=plan)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Plan updated successfully!')
+            return redirect('home')
+        else:
+            messages.error(request, 'Error updating plan.')
+    context = {'form': form}
+    return render(request, 'base/plan_form.html', context)
 
-   
+@login_required(login_url='login')
+def delete_plan(request, pk):
+    plan = get_object_or_404(Plan, id=pk)
+    if request.method == "POST":
+        plan.delete()
+        messages.success(request, 'Plan deleted successfully!')
+        return redirect('home')
+    return render(request, "base/delete.html", {'obj': plan})
 
-
-
-
+@login_required(login_url='login')
+def plan_list(request):
+    plans = Plan.objects.filter(user=request.user)
+    return render(request, 'base/plan_list.html', {'plans': plans})
 
 
 

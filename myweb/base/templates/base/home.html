@@ -1,9 +1,6 @@
+<!-- base/templates/base/home.html -->
 {% extends 'main.html' %}
 {% load static %}
-
-{% block extra_scripts %}
-<!-- No external JavaScript file is being linked here -->
-{% endblock %}
 
 {% block title %}Home - My Project{% endblock %}
 
@@ -68,7 +65,7 @@
     <!-- Add Task Button -->
     <button id="addTaskBtn">Add Task</button>
 
-    <!-- The Popup -->
+    <!-- The Task Popup -->
     <div id="taskPopup" class="popup">
         <div class="popup-content">
             <span class="close">&times;</span>
@@ -80,32 +77,83 @@
         </div>
     </div>
 
+    <!-- Plan List -->
+    <h2>Today's Plans</h2>
+    <ul>
+        {% for plan in plans %}
+        <li>
+            <a href="{% url 'update-plan' plan.id %}"><strong>{{ plan.title }}</strong></a>: {{ plan.description }} (Due: {{ plan.due_date }})
+            <a href="{% url 'update-plan' plan.id %}">Edit</a>
+            <a href="{% url 'delete-plan' plan.id %}">Delete</a>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <!-- Add Plan Button -->
+    <button id="addPlanBtn" class="btn btn-success">Add Plan</button>
+
+    <!-- The Plan Popup -->
+    <div id="planPopup" class="popup">
+        <div class="popup-content">
+            <span class="close">&times;</span>
+            <form id="addPlanForm" action="{% url 'create-plan' %}" method="post">
+                {% csrf_token %}
+                {{ plan_form.as_p }}
+                <button type="submit">Add Plan</button>
+            </form>
+        </div>
+    </div>
+
     <a href="{% url 'logout' %}"><h1>LOG OUT</h1></a>
 {% endif %}
 
 <!-- Embedded JavaScript -->
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    var popup = document.getElementById("taskPopup");
-    var btn = document.getElementById("addTaskBtn");
-    var span = document.getElementsByClassName("close")[0];
+    // Task popup elements
+    var taskPopup = document.getElementById("taskPopup");
+    var taskBtn = document.getElementById("addTaskBtn");
+    var taskSpan = document.getElementsByClassName("close")[0];
 
-    btn.onclick = function() {
-      popup.style.display = "block";
+    taskBtn.onclick = function() {
+      taskPopup.style.display = "block";
     }
 
-    span.onclick = function() {
-      popup.style.display = "none";
+    taskSpan.onclick = function() {
+      taskPopup.style.display = "none";
     }
 
     window.onclick = function(event) {
-      if (event.target == popup) {
-        popup.style.display = "none";
+      if (event.target == taskPopup) {
+        taskPopup.style.display = "none";
+      }
+    }
+
+    // Plan popup elements
+    var planPopup = document.getElementById("planPopup");
+    var planBtn = document.getElementById("addPlanBtn");
+    var planSpan = document.getElementsByClassName("close")[1];
+
+    planBtn.onclick = function() {
+      planPopup.style.display = "block";
+    }
+
+    planSpan.onclick = function() {
+      planPopup.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+      if (event.target == planPopup) {
+        planPopup.style.display = "none";
       }
     }
 });
 </script>
 {% endblock %}
+
+
+
+
 
 
 

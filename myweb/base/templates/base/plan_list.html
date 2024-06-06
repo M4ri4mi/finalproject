@@ -1,0 +1,15 @@
+{% extends 'main.html' %}
+
+{% block content %}
+  <h2>Today's Plans</h2>
+  <a href="{% url 'create-plan' %}" class="btn btn-success">Add Plan</a>
+  <ul>
+    {% for plan in plans %}
+      <li>
+        <a href="{% url 'update-plan' plan.id %}">{{ plan.title }}</a>
+        <a href="{% url 'delete-plan' plan.id %}" class="btn btn-danger btn-sm">Delete</a>
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}
+

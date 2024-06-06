@@ -1,14 +1,13 @@
-<a href = "{% url 'home' %}"> <h1>LOGO</h1></a>
-<a href = "{% url 'home' %}"> <h1>HOME</h1></a>
+<!-- base/templates/navbar.html -->
+<a href="{% url 'home' %}"><h1>LOGO</h1></a>
+<a href="{% url 'home' %}"><h1>HOME</h1></a>
 
 {% if request.user.is_authenticated %}
-<h3> Hello {{request.user}} </h3>
-
-<a href = "{% url 'logout' %}"><h1>LOGOUT</h1></a>
-
+    <h3>Hello {{ request.user.username }}</h3>
+    <a href="{% url 'logout' %}"><h1>LOGOUT</h1></a>
 {% else %}
-
-<a href = "{% url 'login' %}"> <h1>LOGIN</h1></a>
-
-{% endif%}
+    <a href="{% url 'login' %}"><h1>LOGIN/SIGN UP</h1></a>
+{% endif %}
 <hr>
+
+
