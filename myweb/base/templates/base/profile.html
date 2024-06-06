@@ -1,13 +1,30 @@
+<!-- base/templates/base/profile.html -->
 {% extends 'main.html' %}
-{% load static %}
 
 {% block title %}Profile - My Project{% endblock %}
 
 {% block content %}
 <h1>Profile Page</h1>
-<p>This is the profile page content for logged-in users.</p>
+<p>Username: {{ username }}</p>
 
+{% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            <h1>{{ message }}</h1>
+        {% endfor %}
+    </div>
+{% endif %}
 
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Update Profile</button>
+</form>
+
+<a href="{% url 'home' %}">Back to Home</a>
 {% endblock %}
+
+
+
 
 

@@ -48,7 +48,7 @@
 <h1>Welcome to the Home Page</h1>
 <p>This is the home page content for logged-in users.</p>
 {% if user.is_authenticated %}
-    <a href="{% url 'profile' %}" class="profile-link"><h1>Profile</h1></a>
+    <a href="{% url 'profile' %}" class="profile-link"><h1>{{ request.user.username }}</h1></a>
 
     <!-- Task List -->
     <h2>Projects' List</h2>
@@ -150,6 +150,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 {% endblock %}
+
 
 
 

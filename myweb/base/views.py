@@ -5,8 +5,8 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from .models import Task, Plan
-from .forms import TaskForm, PlanForm
+from .models import Task, Plan, Profile
+from .forms import TaskForm, PlanForm, ProfileForm
 from django.contrib.auth.forms import UserCreationForm
 
 def home(request):
@@ -132,6 +132,24 @@ def delete_plan(request, pk):
 def plan_list(request):
     plans = Plan.objects.filter(user=request.user)
     return render(request, 'base/plan_list.html', {'plans': plans})
+
+
+@login_required
+def profile(request):
+    profile, created = Profile.objects.get_or_create(user=request.user)
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, instance=profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Profile updated successfully!')
+            return redirect('profile')  # Redirect to the same profile page
+    else:
+        form = ProfileForm(instance=profile)
+
+    return render(request, 'base/profile.html', {
+        'form': form,
+        'username': request.user.username,
+    })
 
 
 
