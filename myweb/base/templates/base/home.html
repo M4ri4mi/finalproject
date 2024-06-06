@@ -54,11 +54,13 @@
     <a href="{% url 'profile' %}" class="profile-link"><h1>Profile</h1></a>
 
     <!-- Task List -->
-    <h2>Task List</h2>
+    <h2>Projects' List</h2>
     <ul>
         {% for task in tasks %}
         <li>
-            <strong>{{ task.title }}</strong>: {{ task.description }} (Due: {{ task.due_date }})
+            <a href="{% url 'task_detail' task.id %}"><strong>{{ task.title }}</strong></a>: {{ task.description }} (Due: {{ task.due_date }})
+            <a href="{% url 'task_update' task.id %}">Edit</a>
+            <a href="{% url 'task_delete' task.id %}">Delete</a>
         </li>
         {% endfor %}
     </ul>
@@ -104,4 +106,15 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 {% endblock %}
+
+
+
+
+
+
+
+
+
+
+
 

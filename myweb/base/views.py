@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
@@ -10,18 +10,13 @@ def home(request):
     if request.user.is_authenticated:
         if request.method == 'POST':
             form = TaskForm(request.POST)
-            print("Form data received:", request.POST)  # Debug: Print form data
             if form.is_valid():
                 form.save()
-                print("Form is valid and task is saved.")  # Debug: Print form validation success
                 return redirect('home')
-            else:
-                print("Form is not valid:", form.errors)  # Debug: Print form errors
         else:
             form = TaskForm()
 
         tasks = Task.objects.all()
-        print("Tasks retrieved:", tasks)  # Debug: Print tasks retrieved
         return render(request, 'base/home.html', {'tasks': tasks, 'form': form})
     else:
         return render(request, 'base/existing_page.html')
@@ -53,6 +48,42 @@ def logout_user(request):
 
 def profile(request):
     return render(request, 'base/profile.html')
+
+@login_required
+def task_detail(request, task_id):
+    task = get_object_or_404(Task, id=task_id)
+    return render(request, 'base/task_detail.html', {'task': task})
+
+@login_required
+def task_update(request, task_id):
+    task = get_object_or_404(Task, id=task_id)
+    if request.method == 'POST':
+        form = TaskForm(request.POST, instance=task)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+    else:
+        form = TaskForm(instance=task)
+    return render(request, 'base/task_form.html', {'form': form, 'task': task})
+
+@login_required
+def task_delete(request, task_id):
+    task = get_object_or_404(Task, id=task_id)
+    if request.method == 'POST':
+        task.delete()
+        return redirect('home')
+    return render(request, 'base/task_confirm_delete.html', {'task': task})
+
+
+
+   
+
+
+
+
+
+
+
 
 
 
