@@ -10,22 +10,25 @@ from django.http import JsonResponse
 import json
 
 
-@login_required
 def home(request):
-    if request.method == 'POST':
-        form = TaskForm(request.POST)
-        if form.is_valid():
-            task = form.save(commit=False)
-            task.user = request.user
-            task.save()
-            return redirect('home')
-    else:
-        form = TaskForm()
-        plan_form = PlanForm()
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            form = TaskForm(request.POST)
+            if form.is_valid():
+                task = form.save(commit=False)
+                task.user = request.user
+                task.save()
+                form.save_m2m()  # Save the many-to-many data for the form
+                return redirect('home')
+        else:
+            form = TaskForm()
+            plan_form = PlanForm()
 
-    tasks = Task.objects.filter(user=request.user)
-    plans = Plan.objects.filter(user=request.user)
-    return render(request, 'base/home.html', {'tasks': tasks, 'form': form, 'plans': plans, 'plan_form': plan_form})
+        tasks = Task.objects.filter(user=request.user)
+        plans = Plan.objects.filter(user=request.user)
+        return render(request, 'base/home.html', {'tasks': tasks, 'form': form, 'plans': plans, 'plan_form': plan_form})
+    else:
+        return render(request, 'base/existing_page.html')
 
 def login_view(request):
     if request.method == "POST":
