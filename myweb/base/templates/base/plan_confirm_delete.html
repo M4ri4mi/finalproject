@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Delete Plan</title>
+</head>
+<body>
+    <h2>Delete Plan</h2>
+    <p>Are you sure you want to delete "{{ plan.title }}"?</p>
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Yes, delete</button>
+        <a href="{% url 'home' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</body>
+</html>

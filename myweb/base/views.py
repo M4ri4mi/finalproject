@@ -136,10 +136,8 @@ def update_plan(request, pk):
 @login_required
 def delete_plan(request, pk):
     plan = get_object_or_404(Plan, id=pk)
-    if request.method == "POST":
+    if request.method == 'POST':
         plan.delete()
-        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            return JsonResponse({'message': 'Plan deleted successfully'})
         return redirect('home')
     return render(request, 'base/plan_confirm_delete.html', {'plan': plan})
 
