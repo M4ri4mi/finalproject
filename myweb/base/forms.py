@@ -10,6 +10,9 @@ class TaskForm(forms.ModelForm):
     class Meta:
         model = Task
         fields = ['title', 'description', 'due_date']
+        widgets = {
+            'due_date': forms.DateInput(attrs={'type': 'date'})
+        }
 
 class PlanForm(forms.ModelForm):
     class Meta:
@@ -34,4 +37,9 @@ class ProfileForm(forms.ModelForm):
             profile.user.save()
             profile.save()
         return profile
+
+
+
+
+
 

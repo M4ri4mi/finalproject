@@ -1,15 +1,22 @@
 <!-- base/templates/base/task_detail.html -->
-{% extends 'main.html' %}
-
-{% block title %}Task Detail{% endblock %}
-
 {% block content %}
-<h1>{{ task.title }}</h1>
-<p><strong>Due Date:</strong> {{ task.due_date }}</p>
-<p><strong>Description:</strong> {{ task.description }}</p>
+<div>
+    <h2>{{ task.title }}</h2>
+    <p>Description: {{ task.description }}</p>
+    <p>Due Date: {{ task.due_date }}</p>
 
-<a href="{% url 'home' %}">Back to Home</a>
+    <!-- Edit Task Form -->
+    <a href="{% url 'task_update' task.id %}" class="edit-task">Edit</a>
+
+    <!-- Delete Task Form -->
+    <form action="{% url 'task_delete' task.id %}" method="post" style="display: inline;">
+        {% csrf_token %}
+        <button type="submit">Delete</button>
+    </form>
+</div>
 {% endblock %}
+
+
 
 
 
