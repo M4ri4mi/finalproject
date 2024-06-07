@@ -276,6 +276,9 @@ document.addEventListener('DOMContentLoaded', function () {
             saveTaskDetails(taskId, titleInput.value, descriptionInput.value, dueDateInput.value);
         };
         taskDetailContent.appendChild(saveButton);
+
+        // Apply the task-edit-form class to style elements vertically
+        taskDetailContent.classList.add('task-edit-form');
     }
 
     // Save task details via AJAX
@@ -300,6 +303,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 {% endblock %}
+
 
 
 
