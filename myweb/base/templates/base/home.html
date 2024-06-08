@@ -156,7 +156,7 @@
     </div>
 
     <!-- My Tasks Section -->
-    <h2>My Tasks</h2>
+    <h2>My Tasks - {{ today_date }}</h2>
     <ul id="tasksList">
         {% for task in tasks %}
         <li>
@@ -440,6 +440,8 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 {% endblock %}
+
+
 
     
 

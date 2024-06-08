@@ -7,6 +7,7 @@ from .forms import NoteForm, TaskForm, ProfileForm, ProjectForm
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from datetime import date
 
 def home(request):
     if request.user.is_authenticated:
@@ -43,6 +44,8 @@ def home(request):
                     messages.success(request, 'Project created successfully')
                     return redirect('home')
 
+        today_date = date.today().strftime("%B %d, %Y")
+
         return render(request, 'base/home.html', {
             'notes': notes,
             'tasks': tasks,
@@ -50,6 +53,7 @@ def home(request):
             'note_form': note_form,
             'task_form': task_form,
             'project_form': project_form,
+            'today_date': today_date,
         })
     else:
         return render(request, 'base/existing_page.html')
