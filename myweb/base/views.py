@@ -90,6 +90,16 @@ def mark_task_done(request, task_id):
         return JsonResponse({'success': True})
     return JsonResponse({'success': False})
 
+@login_required
+def toggle_task_done(request, task_id):
+    if request.method == 'POST':
+        task = get_object_or_404(Task, id=task_id)
+        task.is_done = not task.is_done
+        task.save()
+        return JsonResponse({'success': True, 'is_done': task.is_done})
+    return JsonResponse({'success': False})
+
+
 
 @login_required
 def update_note(request, note_id):

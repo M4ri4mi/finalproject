@@ -160,18 +160,17 @@
     </div>
 
     <!-- My Tasks Section -->
-   
-    <h2>My Tasks - {{ today_date }}</h2>
-        <ul id="tasksList">
+<h2>My Tasks - {{ today_date }}</h2>
+<ul id="tasksList">
     {% for task in tasks %}
-            <li id="task-{{ task.id }}">
-                <span class="task-content">{% if task.is_done %}<del>{{ task.content }}</del>{% else %}{{ task.content }}{% endif %}</span>
-            <button class="done-task-btn" data-task-id="{{ task.id }}">Done</button>
-            <button class="edit-task-btn" data-task-id="{{ task.id }}">Edit</button>
-            <button class="delete-task-btn" data-task-id="{{ task.id }}">Delete</button>
-            </li>
+    <li id="task-{{ task.id }}">
+        <span class="task-content">{% if task.is_done %}<del>{{ task.content }}</del>{% else %}{{ task.content }}{% endif %}</span>
+        <button class="done-task-btn" data-task-id="{{ task.id }}">Done</button>
+        <button class="edit-task-btn" data-task-id="{{ task.id }}">Edit</button>
+        <button class="delete-task-btn" data-task-id="{{ task.id }}">Delete</button>
+    </li>
     {% endfor %}
-        </ul>
+</ul>
 
     <!-- Add Task Button -->
     <button id="addTaskBtn" class="btn btn-success">Add Task</button>
@@ -223,17 +222,21 @@ document.addEventListener('DOMContentLoaded', function () {
         button.onclick = function(event) {
             event.preventDefault();
             var taskId = this.getAttribute('data-task-id');
-            fetch(`/task/${taskId}/done/`, {
+            fetch(`/task/${taskId}/toggle_done/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': '{{ csrf_token }}'
                 },
                 body: JSON.stringify({})
-            }).then(response => {
-                if (response.ok) {
+            }).then(response => response.json()).then(data => {
+                if (data.success) {
                     var taskElement = document.getElementById(`task-${taskId}`).querySelector('.task-content');
-                    taskElement.innerHTML = `<del>${taskElement.innerHTML}</del>`;
+                    if (data.is_done) {
+                        taskElement.innerHTML = `<del>${taskElement.innerHTML}</del>`;
+                    } else {
+                        taskElement.innerHTML = taskElement.textContent;
+                    }
                 }
             });
         };
