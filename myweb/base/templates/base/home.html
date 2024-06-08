@@ -1,5 +1,3 @@
-<!-- home.html -->
-
 {% extends 'main.html' %}
 {% load static %}
 
@@ -56,7 +54,7 @@
     <a href="{% url 'profile' %}" class="profile-link"><h1>{{ request.user.username }}</h1></a>
 
     <!-- My Projects Section -->
-    <h2>My Projects</h2>
+    <h2>My Projects (<span id="projectRatio">{{ project_ratio }}</span>)</h2>
     <ul id="projectsList">
         {% for project in projects %}
         <li id="project-{{ project.id }}">
@@ -162,18 +160,18 @@
         </div>
     </div>
 
-   <!-- My Tasks Section -->
-<h2>My Tasks - {{ today_date }} (<span id="taskRatio">{{ task_ratio }}</span>)</h2>
-<ul id="tasksList">
-    {% for task in tasks %}
-    <li id="task-{{ task.id }}">
-        <span class="task-content">{% if task.is_done %}<del>{{ task.content }}</del>{% else %}{{ task.content }}{% endif %}</span>
-        <button class="done-task-btn" data-task-id="{{ task.id }}">Done</button>
-        <button class="edit-task-btn" data-task-id="{{ task.id }}">Edit</button>
-        <button class="delete-task-btn" data-task-id="{{ task.id }}">Delete</button>
-    </li>
-    {% endfor %}
-</ul>
+    <!-- My Tasks Section -->
+    <h2>My Tasks - {{ today_date }} (<span id="taskRatio">{{ task_ratio }}</span>)</h2>
+    <ul id="tasksList">
+        {% for task in tasks %}
+        <li id="task-{{ task.id }}">
+            <span class="task-content">{% if task.is_done %}<del>{{ task.content }}</del>{% else %}{{ task.content }}{% endif %}</span>
+            <button class="done-task-btn" data-task-id="{{ task.id }}">Done</button>
+            <button class="edit-task-btn" data-task-id="{{ task.id }}">Edit</button>
+            <button class="delete-task-btn" data-task-id="{{ task.id }}">Delete</button>
+        </li>
+        {% endfor %}
+    </ul>
 
     <!-- Add Task Button -->
     <button id="addTaskBtn" class="btn btn-success">Add Task</button>
@@ -227,6 +225,13 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('taskRatio').textContent = taskRatio;
     }
 
+    function updateProjectRatio() {
+        const totalProjects = document.querySelectorAll('#projectsList li').length;
+        const doneProjects = document.querySelectorAll('#projectsList li .project-content del').length;
+        const projectRatio = `${doneProjects}/${totalProjects}`;
+        document.getElementById('projectRatio').textContent = projectRatio;
+    }
+
     // Handle task done button clicks
     document.querySelectorAll('.done-task-btn').forEach(function(button) {
         button.onclick = function(event) {
@@ -273,13 +278,15 @@ document.addEventListener('DOMContentLoaded', function () {
                     } else {
                         projectElement.innerHTML = projectElement.textContent;
                     }
+                    updateProjectRatio();
                 }
             });
         };
     });
 
-    // Initial task ratio update
+    // Initial task and project ratio update
     updateTaskRatio();
+    updateProjectRatio();
 
     // Handle project delete button clicks
     document.querySelectorAll('.delete-project-btn').forEach(function(button) {
@@ -287,7 +294,7 @@ document.addEventListener('DOMContentLoaded', function () {
             event.preventDefault();
             var projectId = this.getAttribute('data-project-id');
             document.getElementById('deleteProjectForm').action = `/project/${projectId}/delete/`;
-            projectDeletePopup.style.display = "block";
+            document.getElementById('projectDeletePopup').style.display = "block";
         };
     });
 
@@ -441,6 +448,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 {% endblock %}
+
 
 
 

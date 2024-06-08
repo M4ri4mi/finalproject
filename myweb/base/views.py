@@ -23,6 +23,10 @@ def home(request):
         total_tasks = tasks.count()
         task_ratio = f"{completed_tasks}/{total_tasks}" if total_tasks > 0 else "0/0"
 
+        completed_projects = projects.filter(is_done=True).count()
+        total_projects = projects.count()
+        project_ratio = f"{completed_projects}/{total_projects}" if total_projects > 0 else "0/0"
+
         if request.method == 'POST':
             if 'task_form' in request.POST:
                 task_form = TaskForm(request.POST)
@@ -60,6 +64,7 @@ def home(request):
             'project_form': project_form,
             'today_date': today_date,
             'task_ratio': task_ratio,
+            'project_ratio': project_ratio,
         })
     else:
         return render(request, 'base/existing_page.html')
@@ -205,6 +210,7 @@ def toggle_project_done(request, project_id):
         project.save()
         return JsonResponse({'success': True, 'is_done': project.is_done})
     return JsonResponse({'success': False})
+
 
 
 
