@@ -208,238 +208,239 @@
     </div>
 
     <a href="{% url 'logout' %}"><h1>LOG OUT</h1></a>
-    {% endif %}
-    
-    <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Project popup elements
-        var projectPopup = document.getElementById("projectPopup");
-        var projectBtn = document.getElementById("addProjectBtn");
-        var projectSpan = projectPopup.getElementsByClassName("close")[0];
-    
-        projectBtn.onclick = function() {
-            projectPopup.style.display = "block";
-        }
-    
-        projectSpan.onclick = function() {
+{% endif %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Project popup elements
+    var projectPopup = document.getElementById("projectPopup");
+    var projectBtn = document.getElementById("addProjectBtn");
+    var projectSpan = projectPopup.getElementsByClassName("close")[0];
+
+    projectBtn.onclick = function() {
+        projectPopup.style.display = "block";
+    }
+
+    projectSpan.onclick = function() {
+        projectPopup.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == projectPopup) {
             projectPopup.style.display = "none";
         }
-    
-        window.onclick = function(event) {
-            if (event.target == projectPopup) {
-                projectPopup.style.display = "none";
-            }
-        }
-    
-        // Project edit popup elements
-        var projectEditPopup = document.getElementById("projectEditPopup");
-        var projectEditSpan = projectEditPopup.getElementsByClassName("close")[0];
-    
-        projectEditSpan.onclick = function() {
+    }
+
+    // Project edit popup elements
+    var projectEditPopup = document.getElementById("projectEditPopup");
+    var projectEditSpan = projectEditPopup.getElementsByClassName("close")[0];
+
+    projectEditSpan.onclick = function() {
+        projectEditPopup.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == projectEditPopup) {
             projectEditPopup.style.display = "none";
         }
-    
-        window.onclick = function(event) {
-            if (event.target == projectEditPopup) {
-                projectEditPopup.style.display = "none";
-            }
-        }
-    
-        // Project delete popup elements
-        var projectDeletePopup = document.getElementById("projectDeletePopup");
-        var projectDeleteSpan = projectDeletePopup.getElementsByClassName("close")[0];
-        var cancelProjectDeleteBtn = document.getElementById("cancelProjectDeleteBtn");
-    
-        projectDeleteSpan.onclick = function() {
+    }
+
+    // Project delete popup elements
+    var projectDeletePopup = document.getElementById("projectDeletePopup");
+    var projectDeleteSpan = projectDeletePopup.getElementsByClassName("close")[0];
+    var cancelProjectDeleteBtn = document.getElementById("cancelProjectDeleteBtn");
+
+    projectDeleteSpan.onclick = function() {
+        projectDeletePopup.style.display = "none";
+    }
+
+    cancelProjectDeleteBtn.onclick = function() {
+        projectDeletePopup.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == projectDeletePopup) {
             projectDeletePopup.style.display = "none";
         }
-    
-        cancelProjectDeleteBtn.onclick = function() {
-            projectDeletePopup.style.display = "none";
-        }
-    
-        window.onclick = function(event) {
-            if (event.target == projectDeletePopup) {
-                projectDeletePopup.style.display = "none";
-            }
-        }
-    
-        // Handle project edit button clicks
-        document.querySelectorAll('.edit-project-btn').forEach(function(button) {
-            button.onclick = function(event) {
-                event.preventDefault();
-                var projectId = this.getAttribute('data-project-id');
-                var projectTitle = this.parentElement.childNodes[0].textContent.trim().split(' - ')[0];
-                var projectDescription = this.parentElement.childNodes[0].textContent.trim().split(' - ')[1].split(' (Due: ')[0];
-                var projectDueDate = this.parentElement.childNodes[0].textContent.trim().split(' (Due: ')[1].slice(0, -1);
-                document.getElementById('editProjectTitle').value = projectTitle;
-                document.getElementById('editProjectDescription').value = projectDescription;
-                document.getElementById('editProjectDueDate').value = projectDueDate;
-                document.getElementById('editProjectForm').action = `/project/${projectId}/update/`;
-                projectEditPopup.style.display = "block";
-            };
-        });
-    
-        // Handle project delete button clicks
-        document.querySelectorAll('.delete-project-btn').forEach(function(button) {
-            button.onclick = function(event) {
-                event.preventDefault();
-                var projectId = this.getAttribute('data-project-id');
-                document.getElementById('deleteProjectForm').action = `/project/${projectId}/delete/`;
-                projectDeletePopup.style.display = "block";
-            };
-        });
-    
-        // Note popup elements
-        var notePopup = document.getElementById("notePopup");
-        var noteBtn = document.getElementById("addNoteBtn");
-        var noteSpan = notePopup.getElementsByClassName("close")[0];
-    
-        noteBtn.onclick = function() {
-            notePopup.style.display = "block";
-        }
-    
-        noteSpan.onclick = function() {
+    }
+
+    // Handle project edit button clicks
+    document.querySelectorAll('.edit-project-btn').forEach(function(button) {
+        button.onclick = function(event) {
+            event.preventDefault();
+            var projectId = this.getAttribute('data-project-id');
+            var projectTitle = this.parentElement.childNodes[0].textContent.trim().split(' - ')[0];
+            var projectDescription = this.parentElement.childNodes[0].textContent.trim().split(' - ')[1].split(' (Due: ')[0];
+            var projectDueDate = this.parentElement.childNodes[0].textContent.trim().split(' (Due: ')[1].slice(0, -1);
+            document.getElementById('editProjectTitle').value = projectTitle;
+            document.getElementById('editProjectDescription').value = projectDescription;
+            document.getElementById('editProjectDueDate').value = projectDueDate;
+            document.getElementById('editProjectForm').action = `/project/${projectId}/update/`;
+            projectEditPopup.style.display = "block";
+        };
+    });
+
+    // Handle project delete button clicks
+    document.querySelectorAll('.delete-project-btn').forEach(function(button) {
+        button.onclick = function(event) {
+            event.preventDefault();
+            var projectId = this.getAttribute('data-project-id');
+            document.getElementById('deleteProjectForm').action = `/project/${projectId}/delete/`;
+            projectDeletePopup.style.display = "block";
+        };
+    });
+
+    // Note popup elements
+    var notePopup = document.getElementById("notePopup");
+    var noteBtn = document.getElementById("addNoteBtn");
+    var noteSpan = notePopup.getElementsByClassName("close")[0];
+
+    noteBtn.onclick = function() {
+        notePopup.style.display = "block";
+    }
+
+    noteSpan.onclick = function() {
+        notePopup.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == notePopup) {
             notePopup.style.display = "none";
         }
-    
-        window.onclick = function(event) {
-            if (event.target == notePopup) {
-                notePopup.style.display = "none";
-            }
-        }
-    
-        // Note edit popup elements
-        var noteEditPopup = document.getElementById("noteEditPopup");
-        var noteEditSpan = noteEditPopup.getElementsByClassName("close")[0];
-    
-        noteEditSpan.onclick = function() {
+    }
+
+    // Note edit popup elements
+    var noteEditPopup = document.getElementById("noteEditPopup");
+    var noteEditSpan = noteEditPopup.getElementsByClassName("close")[0];
+
+    noteEditSpan.onclick = function() {
+        noteEditPopup.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == noteEditPopup) {
             noteEditPopup.style.display = "none";
         }
-    
-        window.onclick = function(event) {
-            if (event.target == noteEditPopup) {
-                noteEditPopup.style.display = "none";
-            }
-        }
-    
-        // Note delete popup elements
-        var noteDeletePopup = document.getElementById("noteDeletePopup");
-        var noteDeleteSpan = noteDeletePopup.getElementsByClassName("close")[0];
-        var cancelDeleteBtn = document.getElementById("cancelDeleteBtn");
-    
-        noteDeleteSpan.onclick = function() {
+    }
+
+    // Note delete popup elements
+    var noteDeletePopup = document.getElementById("noteDeletePopup");
+    var noteDeleteSpan = noteDeletePopup.getElementsByClassName("close")[0];
+    var cancelDeleteBtn = document.getElementById("cancelDeleteBtn");
+
+    noteDeleteSpan.onclick = function() {
+        noteDeletePopup.style.display = "none";
+    }
+
+    cancelDeleteBtn.onclick = function() {
+        noteDeletePopup.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == noteDeletePopup) {
             noteDeletePopup.style.display = "none";
         }
-    
-        cancelDeleteBtn.onclick = function() {
-            noteDeletePopup.style.display = "none";
-        }
-    
-        window.onclick = function(event) {
-            if (event.target == noteDeletePopup) {
-                noteDeletePopup.style.display = "none";
-            }
-        }
-    
-        // Handle note edit button clicks
-        document.querySelectorAll('.edit-note-btn').forEach(function(button) {
-            button.onclick = function(event) {
-                event.preventDefault();
-                var noteId = this.getAttribute('data-note-id');
-                var noteContent = this.parentElement.childNodes[0].textContent.trim();
-                document.getElementById('editNoteContent').value = noteContent;
-                document.getElementById('editNoteForm').action = `/note/${noteId}/update/`;
-                noteEditPopup.style.display = "block";
-            };
-        });
-    
-        // Handle note delete button clicks
-        document.querySelectorAll('.delete-note-btn').forEach(function(button) {
-            button.onclick = function(event) {
-                event.preventDefault();
-                var noteId = this.getAttribute('data-note-id');
-                document.getElementById('deleteNoteForm').action = `/note/${noteId}/delete/`;
-                noteDeletePopup.style.display = "block";
-            };
-        });
-    
-        // Task popup elements
-        var taskPopup = document.getElementById("taskPopup");
-        var taskBtn = document.getElementById("addTaskBtn");
-        var taskSpan = taskPopup.getElementsByClassName("close")[0];
-    
-        taskBtn.onclick = function() {
-            taskPopup.style.display = "block";
-        }
-    
-        taskSpan.onclick = function() {
+    }
+
+    // Handle note edit button clicks
+    document.querySelectorAll('.edit-note-btn').forEach(function(button) {
+        button.onclick = function(event) {
+            event.preventDefault();
+            var noteId = this.getAttribute('data-note-id');
+            var noteContent = this.parentElement.childNodes[0].textContent.trim();
+            document.getElementById('editNoteContent').value = noteContent;
+            document.getElementById('editNoteForm').action = `/note/${noteId}/update/`;
+            noteEditPopup.style.display = "block";
+        };
+    });
+
+    // Handle note delete button clicks
+    document.querySelectorAll('.delete-note-btn').forEach(function(button) {
+        button.onclick = function(event) {
+            event.preventDefault();
+            var noteId = this.getAttribute('data-note-id');
+            document.getElementById('deleteNoteForm').action = `/note/${noteId}/delete/`;
+            noteDeletePopup.style.display = "block";
+        };
+    });
+
+    // Task popup elements
+    var taskPopup = document.getElementById("taskPopup");
+    var taskBtn = document.getElementById("addTaskBtn");
+    var taskSpan = taskPopup.getElementsByClassName("close")[0];
+
+    taskBtn.onclick = function() {
+        taskPopup.style.display = "block";
+    }
+
+    taskSpan.onclick = function() {
+        taskPopup.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == taskPopup) {
             taskPopup.style.display = "none";
         }
-    
-        window.onclick = function(event) {
-            if (event.target == taskPopup) {
-                taskPopup.style.display = "none";
-            }
-        }
-    
-        // Task edit popup elements
-        var taskEditPopup = document.getElementById("taskEditPopup");
-        var taskEditSpan = taskEditPopup.getElementsByClassName("close")[0];
-    
-        taskEditSpan.onclick = function() {
+    }
+
+    // Task edit popup elements
+    var taskEditPopup = document.getElementById("taskEditPopup");
+    var taskEditSpan = taskEditPopup.getElementsByClassName("close")[0];
+
+    taskEditSpan.onclick = function() {
+        taskEditPopup.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == taskEditPopup) {
             taskEditPopup.style.display = "none";
         }
-    
-        window.onclick = function(event) {
-            if (event.target == taskEditPopup) {
-                taskEditPopup.style.display = "none";
-            }
-        }
-    
-        // Task delete popup elements
-        var taskDeletePopup = document.getElementById("taskDeletePopup");
-        var taskDeleteSpan = taskDeletePopup.getElementsByClassName("close")[0];
-        var cancelTaskDeleteBtn = document.getElementById("cancelTaskDeleteBtn");
-    
-        taskDeleteSpan.onclick = function() {
+    }
+
+    // Task delete popup elements
+    var taskDeletePopup = document.getElementById("taskDeletePopup");
+    var taskDeleteSpan = taskDeletePopup.getElementsByClassName("close")[0];
+    var cancelTaskDeleteBtn = document.getElementById("cancelTaskDeleteBtn");
+
+    taskDeleteSpan.onclick = function() {
+        taskDeletePopup.style.display = "none";
+    }
+
+    cancelTaskDeleteBtn.onclick = function() {
+        taskDeletePopup.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == taskDeletePopup) {
             taskDeletePopup.style.display = "none";
         }
-    
-        cancelTaskDeleteBtn.onclick = function() {
-            taskDeletePopup.style.display = "none";
-        }
-    
-        window.onclick = function(event) {
-            if (event.target == taskDeletePopup) {
-                taskDeletePopup.style.display = "none";
-            }
-        }
-    
-        // Handle task edit button clicks
-        document.querySelectorAll('.edit-task-btn').forEach(function(button) {
-            button.onclick = function(event) {
-                event.preventDefault();
-                var taskId = this.getAttribute('data-task-id');
-                var taskContent = this.parentElement.childNodes[0].textContent.trim();
-                document.getElementById('editTaskContent').value = taskContent;
-                document.getElementById('editTaskForm').action = `/task/${taskId}/update/`;
-                taskEditPopup.style.display = "block";
-            };
-        });
-    
-        // Handle task delete button clicks
-        document.querySelectorAll('.delete-task-btn').forEach(function(button) {
-            button.onclick = function(event) {
-                event.preventDefault();
-                var taskId = this.getAttribute('data-task-id');
-                document.getElementById('deleteTaskForm').action = `/task/${taskId}/delete/`;
-                taskDeletePopup.style.display = "block";
-            };
-        });
+    }
+
+    // Handle task edit button clicks
+    document.querySelectorAll('.edit-task-btn').forEach(function(button) {
+        button.onclick = function(event) {
+            event.preventDefault();
+            var taskId = this.getAttribute('data-task-id');
+            var taskContent = this.parentElement.childNodes[0].textContent.trim();
+            document.getElementById('editTaskContent').value = taskContent;
+            document.getElementById('editTaskForm').action = `/task/${taskId}/update/`;
+            taskEditPopup.style.display = "block";
+        };
     });
-    </script>
-    {% endblock %}
+
+    // Handle task delete button clicks
+    document.querySelectorAll('.delete-task-btn').forEach(function(button) {
+        button.onclick = function(event) {
+            event.preventDefault();
+            var taskId = this.getAttribute('data-task-id');
+            document.getElementById('deleteTaskForm').action = `/task/${taskId}/delete/`;
+            taskDeletePopup.style.display = "block";
+        };
+    });
+});
+</script>
+{% endblock %}
+
     
 
 
