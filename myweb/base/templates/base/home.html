@@ -1,3 +1,5 @@
+<!-- home.html -->
+
 {% extends 'main.html' %}
 {% load static %}
 
@@ -54,17 +56,17 @@
     <a href="{% url 'profile' %}" class="profile-link"><h1>{{ request.user.username }}</h1></a>
 
     <!-- My Projects Section -->
-<h2>My Projects</h2>
-<ul id="projectsList">
-    {% for project in projects %}
-    <li id="project-{{ project.id }}">
-        <span class="project-content">{% if project.is_done %}<del>{{ project.title }} - {{ project.description }} (Due: {{ project.due_date }})</del>{% else %}{{ project.title }} - {{ project.description }} (Due: {{ project.due_date }}){% endif %}</span>
-        <button class="done-project-btn" data-project-id="{{ project.id }}">Done</button>
-        <button class="edit-project-btn" data-project-id="{{ project.id }}">Edit</button>
-        <button class="delete-project-btn" data-project-id="{{ project.id }}">Delete</button>
-    </li>
-    {% endfor %}
-</ul>
+    <h2>My Projects</h2>
+    <ul id="projectsList">
+        {% for project in projects %}
+        <li id="project-{{ project.id }}">
+            <span class="project-content">{% if project.is_done %}<del>{{ project.title }} - {{ project.description }} (Due: {{ project.due_date }})</del>{% else %}{{ project.title }} - {{ project.description }} (Due: {{ project.due_date }}){% endif %}</span>
+            <button class="done-project-btn" data-project-id="{{ project.id }}">Done</button>
+            <button class="edit-project-btn" data-project-id="{{ project.id }}">Edit</button>
+            <button class="delete-project-btn" data-project-id="{{ project.id }}">Delete</button>
+        </li>
+        {% endfor %}
+    </ul>
 
     <!-- Add Project Button -->
     <button id="addProjectBtn" class="btn btn-success">Add Project</button>
@@ -160,8 +162,8 @@
         </div>
     </div>
 
-    <!-- My Tasks Section -->
-<h2>My Tasks - {{ today_date }}</h2>
+   <!-- My Tasks Section -->
+<h2>My Tasks - {{ today_date }} (<span id="taskRatio">{{ task_ratio }}</span>)</h2>
 <ul id="tasksList">
     {% for task in tasks %}
     <li id="task-{{ task.id }}">
@@ -218,6 +220,13 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    function updateTaskRatio() {
+        const totalTasks = document.querySelectorAll('#tasksList li').length;
+        const doneTasks = document.querySelectorAll('#tasksList li .task-content del').length;
+        const taskRatio = `${doneTasks}/${totalTasks}`;
+        document.getElementById('taskRatio').textContent = taskRatio;
+    }
+
     // Handle task done button clicks
     document.querySelectorAll('.done-task-btn').forEach(function(button) {
         button.onclick = function(event) {
@@ -238,65 +247,14 @@ document.addEventListener('DOMContentLoaded', function () {
                     } else {
                         taskElement.innerHTML = taskElement.textContent;
                     }
+                    updateTaskRatio();
                 }
             });
         };
     });
 
-    // Project popup elements
-    var projectPopup = document.getElementById("projectPopup");
-    var projectBtn = document.getElementById("addProjectBtn");
-    var projectSpan = projectPopup.getElementsByClassName("close")[0];
-
-    projectBtn.onclick = function() {
-        projectPopup.style.display = "block";
-    }
-
-    projectSpan.onclick = function() {
-        projectPopup.style.display = "none";
-    }
-
-    window.onclick = function(event) {
-        if (event.target == projectPopup) {
-            projectPopup.style.display = "none";
-        }
-    }
-
-    // Project edit popup elements
-    var projectEditPopup = document.getElementById("projectEditPopup");
-    var projectEditSpan = projectEditPopup.getElementsByClassName("close")[0];
-
-    projectEditSpan.onclick = function() {
-        projectEditPopup.style.display = "none";
-    }
-
-    window.onclick = function(event) {
-        if (event.target == projectEditPopup) {
-            projectEditPopup.style.display = "none";
-        }
-    }
-
-    // Project delete popup elements
-    var projectDeletePopup = document.getElementById("projectDeletePopup");
-    var projectDeleteSpan = projectDeletePopup.getElementsByClassName("close")[0];
-    var cancelProjectDeleteBtn = document.getElementById("cancelProjectDeleteBtn");
-
-    projectDeleteSpan.onclick = function() {
-        projectDeletePopup.style.display = "none";
-    }
-
-    cancelProjectDeleteBtn.onclick = function() {
-        projectDeletePopup.style.display = "none";
-    }
-
-    window.onclick = function(event) {
-        if (event.target == projectDeletePopup) {
-            projectDeletePopup.style.display = "none";
-        }
-    }
-
-     // Handle project done button clicks
-     document.querySelectorAll('.done-project-btn').forEach(function(button) {
+    // Handle project done button clicks
+    document.querySelectorAll('.done-project-btn').forEach(function(button) {
         button.onclick = function(event) {
             event.preventDefault();
             var projectId = this.getAttribute('data-project-id');
@@ -319,6 +277,9 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         };
     });
+
+    // Initial task ratio update
+    updateTaskRatio();
 
     // Handle project delete button clicks
     document.querySelectorAll('.delete-project-btn').forEach(function(button) {

@@ -19,6 +19,10 @@ def home(request):
         task_form = TaskForm()
         project_form = ProjectForm()
 
+        completed_tasks = tasks.filter(is_done=True).count()
+        total_tasks = tasks.count()
+        task_ratio = f"{completed_tasks}/{total_tasks}" if total_tasks > 0 else "0/0"
+
         if request.method == 'POST':
             if 'task_form' in request.POST:
                 task_form = TaskForm(request.POST)
@@ -55,6 +59,7 @@ def home(request):
             'task_form': task_form,
             'project_form': project_form,
             'today_date': today_date,
+            'task_ratio': task_ratio,
         })
     else:
         return render(request, 'base/existing_page.html')
