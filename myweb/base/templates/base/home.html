@@ -1,4 +1,3 @@
-<!-- base/templates/base/home.html -->
 {% extends 'main.html' %}
 {% load static %}
 
@@ -43,21 +42,6 @@
     text-decoration: none;
     cursor: pointer;
 }
-
-/* Crossed-out text */
-.crossed-out {
-    text-decoration: line-through;
-}
-
-/* Vertical layout for form fields */
-.task-edit-form label,
-.task-edit-form input,
-.task-edit-form textarea,
-.task-edit-form button {
-    display: block;
-    width: 100%;
-    margin: 10px 0;
-}
 </style>
 
 <h1>Welcome to the Home Page</h1>
@@ -65,65 +49,54 @@
 {% if user.is_authenticated %}
     <a href="{% url 'profile' %}" class="profile-link"><h1>{{ request.user.username }}</h1></a>
 
-    <!-- Task List -->
-    <h2>Projects' List</h2>
-    <ul>
-        {% for task in tasks %}
+    <!-- My Notes Section -->
+    <h2>My Notes</h2>
+    <ul id="notesList">
+        {% for note in notes %}
         <li>
-            <a href="#" class="task-detail-link" data-task-id="{{ task.id }}"><strong>{{ task.title }}</strong></a>: (Due: {{ task.due_date }})
+            {{ note.content }}
+            <button class="edit-note-btn" data-note-id="{{ note.id }}">Edit</button>
+            <button class="delete-note-btn" data-note-id="{{ note.id }}">Delete</button>
         </li>
         {% endfor %}
     </ul>
 
-    <!-- Add Task Button -->
-    <button id="addTaskBtn">Add Task</button>
+    <!-- Add Note Button -->
+    <button id="addNoteBtn" class="btn btn-success">Add Note</button>
 
-    <!-- The Task Popup -->
-    <div id="taskPopup" class="popup">
+    <!-- The Note Popup -->
+    <div id="notePopup" class="popup">
         <div class="popup-content">
             <span class="close">&times;</span>
-            <form id="addTaskForm" action="{% url 'home' %}" method="post">
+            <form id="addNoteForm" action="{% url 'home' %}" method="post">
                 {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit">Add Task</button>
+                {{ note_form.as_p }}
+                <button type="submit">Create</button>
             </form>
         </div>
     </div>
 
-    <!-- Task Detail Popup -->
-    <div id="taskDetailPopup" class="popup">
+    <!-- The Note Edit Popup -->
+    <div id="noteEditPopup" class="popup">
         <div class="popup-content">
             <span class="close">&times;</span>
-            <div id="taskDetailContent">
-                <!-- Task details will be loaded here -->
-            </div>
+            <form id="editNoteForm" method="post">
+                {% csrf_token %}
+                <textarea id="editNoteContent" name="content"></textarea>
+                <button type="submit">Update</button>
+            </form>
         </div>
     </div>
 
-    <!-- Plan List -->
-    <h2>Today's Plans</h2>
-    <ul>
-        {% for plan in plans %}
-        <li id="plan-{{ plan.id }}">
-            <span class="plan-title">{{ plan.title }}</span>
-            <button class="done-btn" data-plan-id="{{ plan.id }}">Done</button>
-            <a href="{% url 'update-plan' plan.id %}">Edit</a>
-            <a href="{% url 'delete-plan' plan.id %}">Delete</a>
-        </li>
-        {% endfor %}
-    </ul>
-
-    <!-- Add Plan Button -->
-    <button id="addPlanBtn" class="btn btn-success">Add Plan</button>
-
-    <!-- The Plan Popup -->
-    <div id="planPopup" class="popup">
+    <!-- The Note Delete Popup -->
+    <div id="noteDeletePopup" class="popup">
         <div class="popup-content">
             <span class="close">&times;</span>
-            <form id="addPlanForm" action="{% url 'create-plan' %}" method="post">
+            <p>Are you sure you want to delete this note?</p>
+            <form id="deleteNoteForm" method="post">
                 {% csrf_token %}
-                {{ plan_form.as_p }}
-                <button type="submit">Add Plan</button>
+                <button type="submit" class="btn btn-danger">Yes, delete</button>
+                <button type="button" class="btn btn-secondary" id="cancelDeleteBtn">Cancel</button>
             </form>
         </div>
     </div>
@@ -131,182 +104,95 @@
     <a href="{% url 'logout' %}"><h1>LOG OUT</h1></a>
 {% endif %}
 
-<!-- Embedded JavaScript -->
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    // Task popup elements
-    var taskPopup = document.getElementById("taskPopup");
-    var taskBtn = document.getElementById("addTaskBtn");
-    var taskSpan = document.getElementsByClassName("close")[0];
+    // Note popup elements
+    var notePopup = document.getElementById("notePopup");
+    var noteBtn = document.getElementById("addNoteBtn");
+    var noteSpan = document.getElementsByClassName("close")[0];
 
-    taskBtn.onclick = function() {
-      taskPopup.style.display = "block";
+    noteBtn.onclick = function() {
+        notePopup.style.display = "block";
     }
 
-    taskSpan.onclick = function() {
-      taskPopup.style.display = "none";
-    }
-
-    window.onclick = function(event) {
-      if (event.target == taskPopup) {
-        taskPopup.style.display = "none";
-      }
-    }
-
-    // Plan popup elements
-    var planPopup = document.getElementById("planPopup");
-    var planBtn = document.getElementById("addPlanBtn");
-    var planSpan = document.getElementsByClassName("close")[1];
-
-    planBtn.onclick = function() {
-      planPopup.style.display = "block";
-    }
-
-    planSpan.onclick = function() {
-      planPopup.style.display = "none";
+    noteSpan.onclick = function() {
+        notePopup.style.display = "none";
     }
 
     window.onclick = function(event) {
-      if (event.target == planPopup) {
-        planPopup.style.display = "none";
-      }
+        if (event.target == notePopup) {
+            notePopup.style.display = "none";
+        }
     }
 
-    // Handle "Done" button clicks
-    document.querySelectorAll('.done-btn').forEach(function(button) {
-        button.onclick = function() {
-            var planId = this.getAttribute('data-plan-id');
-            var planTitle = document.querySelector('#plan-' + planId + ' .plan-title');
-            planTitle.classList.toggle('crossed-out');
-        };
-    });
+    // Note edit popup elements
+    var noteEditPopup = document.getElementById("noteEditPopup");
+    var noteEditSpan = document.getElementsByClassName("close")[1];
 
-    // Task detail popup elements
-    var taskDetailPopup = document.getElementById("taskDetailPopup");
-    var taskDetailSpan = document.getElementsByClassName("close")[2];
-
-    taskDetailSpan.onclick = function() {
-      taskDetailPopup.style.display = "none";
+    noteEditSpan.onclick = function() {
+        noteEditPopup.style.display = "none";
     }
 
     window.onclick = function(event) {
-      if (event.target == taskDetailPopup) {
-        taskDetailPopup.style.display = "none";
-      }
+        if (event.target == noteEditPopup) {
+            noteEditPopup.style.display = "none";
+        }
     }
 
-    // Handle task detail link clicks
-    document.querySelectorAll('.task-detail-link').forEach(function(link) {
-        link.onclick = function(event) {
+    // Note delete popup elements
+    var noteDeletePopup = document.getElementById("noteDeletePopup");
+    var noteDeleteSpan = document.getElementsByClassName("close")[2];
+    var cancelDeleteBtn = document.getElementById("cancelDeleteBtn");
+
+    noteDeleteSpan.onclick = function() {
+        noteDeletePopup.style.display = "none";
+    }
+
+    cancelDeleteBtn.onclick = function() {
+        noteDeletePopup.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == noteDeletePopup) {
+            noteDeletePopup.style.display = "none";
+        }
+    }
+
+    // Handle note edit button clicks
+    document.querySelectorAll('.edit-note-btn').forEach(function(button) {
+        button.onclick = function(event) {
             event.preventDefault();
-            var taskId = this.getAttribute('data-task-id');
-            fetchTaskDetail(taskId);
+            var noteId = this.getAttribute('data-note-id');
+            var noteContent = this.parentElement.childNodes[0].textContent.trim();
+            document.getElementById('editNoteContent').value = noteContent;
+            document.getElementById('editNoteForm').action = `/note/${noteId}/update/`;
+            noteEditPopup.style.display = "block";
         };
     });
 
-    // Fetch task details
-    function fetchTaskDetail(taskId) {
-        fetch('/task/' + taskId + '/')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('taskDetailContent').innerHTML = data;
-                taskDetailPopup.style.display = "block";
-                
-                // Attach event listener to the edit button
-                document.querySelector('.edit-task').onclick = function(event) {
-                    event.preventDefault();
-                    enableInlineEditing(taskId);
-                };
-
-                // Attach event listener to the delete button
-                document.querySelector('.delete-task-form').onsubmit = function(event) {
-                    event.preventDefault();
-                    var taskId = this.getAttribute('data-task-id');
-                    if (confirm("Are you sure you want to delete this task?")) {
-                        fetch('/task/' + taskId + '/delete/', {
-                            method: 'POST',
-                            headers: {
-                                'X-CSRFToken': '{{ csrf_token }}',
-                            }
-                        }).then(response => {
-                            if (response.ok) {
-                                window.location.reload();
-                            }
-                        });
-                    }
-                };
-            });
-    }
-
-    // Enable inline editing
-    function enableInlineEditing(taskId) {
-        var taskDetailContent = document.getElementById('taskDetailContent');
-        var titleElement = taskDetailContent.querySelector('h2');
-        var descriptionElement = taskDetailContent.querySelector('p');
-        var dueDateElement = taskDetailContent.querySelector('p:nth-of-type(2)');
-
-        var titleLabel = document.createElement('label');
-        titleLabel.innerText = 'Title:';
-        var titleInput = document.createElement('input');
-        titleInput.type = 'text';
-        titleInput.value = titleElement.innerText;
-
-        var descriptionLabel = document.createElement('label');
-        descriptionLabel.innerText = 'Description:';
-        var descriptionInput = document.createElement('textarea');
-        descriptionInput.value = descriptionElement.innerText.split(': ')[1];
-
-        var dueDateLabel = document.createElement('label');
-        dueDateLabel.innerText = 'Due Date:';
-        var dueDateInput = document.createElement('input');
-        dueDateInput.type = 'date';
-        dueDateInput.value = dueDateElement.innerText.split(': ')[1];
-
-        taskDetailContent.innerHTML = '';
-        taskDetailContent.appendChild(titleLabel);
-        taskDetailContent.appendChild(titleInput);
-        taskDetailContent.appendChild(descriptionLabel);
-        taskDetailContent.appendChild(descriptionInput);
-        taskDetailContent.appendChild(dueDateLabel);
-        taskDetailContent.appendChild(dueDateInput);
-
-        var saveButton = document.createElement('button');
-        saveButton.innerText = 'Save';
-        saveButton.onclick = function() {
-            saveTaskDetails(taskId, titleInput.value, descriptionInput.value, dueDateInput.value);
+    // Handle note delete button clicks
+    document.querySelectorAll('.delete-note-btn').forEach(function(button) {
+        button.onclick = function(event) {
+            event.preventDefault();
+            var noteId = this.getAttribute('data-note-id');
+            document.getElementById('deleteNoteForm').action = `/note/${noteId}/delete/`;
+            noteDeletePopup.style.display = "block";
         };
-        taskDetailContent.appendChild(saveButton);
-    }
-
-    // Save task details via AJAX
-    function saveTaskDetails(taskId, title, description, dueDate) {
-        fetch('/task/' + taskId + '/update/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': '{{ csrf_token }}',
-            },
-            body: JSON.stringify({
-                title: title,
-                description: description,
-                due_date: dueDate
-            })
-        }).then(response => {
-            if (response.ok) {
-                fetchTaskDetail(taskId);
-            }
-        });
-    }
+    });
 });
 </script>
 {% endblock %}
 
 
+       
 
 
 
 
 
+
+
+                
 
 
 

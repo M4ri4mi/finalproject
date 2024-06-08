@@ -1,23 +1,8 @@
 # forms.py
 from django import forms
-from .models import Task
-from .models import Plan
-from .models import Profile
+from .models import  Note, Profile
 
 
-
-class TaskForm(forms.ModelForm):
-    class Meta:
-        model = Task
-        fields = ['title', 'description', 'due_date']
-        widgets = {
-            'due_date': forms.DateInput(attrs={'type': 'date'})
-        }
-
-class PlanForm(forms.ModelForm):
-    class Meta:
-        model = Plan
-        fields = ['title']
 
 class ProfileForm(forms.ModelForm):
     email = forms.EmailField(required=True)
@@ -37,6 +22,12 @@ class ProfileForm(forms.ModelForm):
             profile.user.save()
             profile.save()
         return profile
+
+
+class NoteForm(forms.ModelForm):
+    class Meta:
+        model = Note
+        fields = ['content']
 
 
 

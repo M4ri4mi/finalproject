@@ -1,33 +1,53 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.models import User
-from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from .models import Task, Plan, Profile
-from .forms import TaskForm, PlanForm, ProfileForm
+from django.contrib import messages
+from .models import Note
+from .forms import NoteForm
 from django.contrib.auth.forms import UserCreationForm
-from django.http import JsonResponse
-import json
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
 
-
+@login_required
 def home(request):
-    if request.user.is_authenticated:
-        if request.method == 'POST':
-            form = TaskForm(request.POST)
-            if form.is_valid():
-                task = form.save(commit=False)
-                task.user = request.user
-                task.save()
-                return redirect('home')
-        else:
-            form = TaskForm()
-            plan_form = PlanForm()
-
-        tasks = Task.objects.filter(user=request.user)
-        plans = Plan.objects.filter(user=request.user)
-        return render(request, 'base/home.html', {'tasks': tasks, 'form': form, 'plans': plans, 'plan_form': plan_form})
+    notes = Note.objects.filter(user=request.user)
+    
+    if request.method == 'POST':
+        note_form = NoteForm(request.POST)
+        if note_form.is_valid():
+            note = note_form.save(commit=False)
+            note.user = request.user
+            note.save()
+            messages.success(request, 'Note created successfully')
+            return redirect('home')
     else:
-        return render(request, 'base/existing_page.html')
+        note_form = NoteForm()
+
+    return render(request, 'base/home.html', {
+        'notes': notes,
+        'note_form': note_form,
+    })
+
+@login_required
+def update_note(request, note_id):
+    note = get_object_or_404(Note, id=note_id)
+    if request.method == 'POST':
+        form = NoteForm(request.POST, instance=note)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Note updated successfully')
+            return redirect('home')
+    else:
+        form = NoteForm(instance=note)
+    return render(request, 'base/note_form.html', {'form': form})
+
+@login_required
+def delete_note(request, note_id):
+    note = get_object_or_404(Note, id=note_id)
+    if request.method == 'POST':
+        note.delete()
+        messages.success(request, 'Note deleted successfully')
+        return redirect('home')
+    return render(request, 'base/note_confirm_delete.html', {'note': note})
 
 def login_view(request):
     if request.method == "POST":
@@ -67,7 +87,7 @@ def profile(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Profile updated successfully!')
-            return redirect('profile')  # Redirect to the same profile page
+            return redirect('profile')
     else:
         form = ProfileForm(instance=profile)
 
@@ -76,88 +96,3 @@ def profile(request):
         'username': request.user.username,
     })
 
-@login_required
-def task_detail(request, task_id):
-    task = get_object_or_404(Task, id=task_id)
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        return render(request, 'base/task_detail_content.html', {'task': task})
-    return render(request, 'base/task_detail.html', {'task': task})
-
-@login_required
-def task_update(request, task_id):
-    task = get_object_or_404(Task, id=task_id)
-    if request.method == 'POST':
-        form = TaskForm(request.POST, instance=task)
-        if form.is_valid():
-            form.save()
-            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-                return JsonResponse({'message': 'Task updated successfully'})
-            return redirect('home')
-    else:
-        form = TaskForm(instance=task)
-    return render(request, 'base/task_form.html', {'form': form})
-
-@login_required
-def task_delete(request, task_id):
-    task = get_object_or_404(Task, id=task_id)
-    if request.method == 'POST':
-        task.delete()
-        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            return JsonResponse({'message': 'Task deleted successfully'})
-        return redirect('home')
-    return render(request, 'base/task_confirm_delete.html', {'task': task})
-
-# Plan CRUD
-@login_required
-def create_plan(request):
-    if request.method == 'POST':
-        form = PlanForm(request.POST)
-        if form.is_valid():
-            plan = form.save(commit=False)
-            plan.user = request.user
-            plan.save()
-            return redirect('home')
-    else:
-        form = PlanForm()
-    return render(request, 'base/plan_form.html', {'form': form})
-
-@login_required
-def update_plan(request, pk):
-    plan = get_object_or_404(Plan, id=pk)
-    if request.method == 'POST':
-        form = PlanForm(request.POST, instance=plan)
-        if form.is_valid():
-            form.save()
-            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-                return JsonResponse({'message': 'Plan updated successfully'})
-            return redirect('home')
-    else:
-        form = PlanForm(instance=plan)
-    return render(request, 'base/plan_form.html', {'form': form})
-
-@login_required
-def delete_plan(request, pk):
-    plan = get_object_or_404(Plan, id=pk)
-    if request.method == "POST":
-        plan.delete()
-        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            return JsonResponse({'message': 'Plan deleted successfully'})
-        return redirect('home')
-    return render(request, 'base/plan_confirm_delete.html', {'plan': plan})
-
-@login_required
-def plan_list(request):
-    plans = Plan.objects.filter(user=request.user)
-    return render(request, 'base/plan_list.html', {'plans': plans})
-
-
-
-
-
-
-
-
-
-
-
-    
