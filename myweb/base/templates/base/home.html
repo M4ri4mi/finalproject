@@ -54,16 +54,17 @@
     <a href="{% url 'profile' %}" class="profile-link"><h1>{{ request.user.username }}</h1></a>
 
     <!-- My Projects Section -->
-    <h2>My Projects</h2>
-    <ul id="projectsList">
-        {% for project in projects %}
-        <li>
-            {{ project.title }} - {{ project.description }} (Due: {{ project.due_date }})
-            <button class="edit-project-btn" data-project-id="{{ project.id }}">Edit</button>
-            <button class="delete-project-btn" data-project-id="{{ project.id }}">Delete</button>
-        </li>
-        {% endfor %}
-    </ul>
+<h2>My Projects</h2>
+<ul id="projectsList">
+    {% for project in projects %}
+    <li id="project-{{ project.id }}">
+        <span class="project-content">{% if project.is_done %}<del>{{ project.title }} - {{ project.description }} (Due: {{ project.due_date }})</del>{% else %}{{ project.title }} - {{ project.description }} (Due: {{ project.due_date }}){% endif %}</span>
+        <button class="done-project-btn" data-project-id="{{ project.id }}">Done</button>
+        <button class="edit-project-btn" data-project-id="{{ project.id }}">Edit</button>
+        <button class="delete-project-btn" data-project-id="{{ project.id }}">Delete</button>
+    </li>
+    {% endfor %}
+</ul>
 
     <!-- Add Project Button -->
     <button id="addProjectBtn" class="btn btn-success">Add Project</button>
@@ -294,19 +295,28 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Handle project edit button clicks
-    document.querySelectorAll('.edit-project-btn').forEach(function(button) {
+     // Handle project done button clicks
+     document.querySelectorAll('.done-project-btn').forEach(function(button) {
         button.onclick = function(event) {
             event.preventDefault();
             var projectId = this.getAttribute('data-project-id');
-            var projectTitle = this.parentElement.childNodes[0].textContent.trim().split(' - ')[0];
-            var projectDescription = this.parentElement.childNodes[0].textContent.trim().split(' - ')[1].split(' (Due: ')[0];
-            var projectDueDate = this.parentElement.childNodes[0].textContent.trim().split(' (Due: ')[1].slice(0, -1);
-            document.getElementById('editProjectTitle').value = projectTitle;
-            document.getElementById('editProjectDescription').value = projectDescription;
-            document.getElementById('editProjectDueDate').value = projectDueDate;
-            document.getElementById('editProjectForm').action = `/project/${projectId}/update/`;
-            projectEditPopup.style.display = "block";
+            fetch(`/project/${projectId}/toggle_done/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({})
+            }).then(response => response.json()).then(data => {
+                if (data.success) {
+                    var projectElement = document.getElementById(`project-${projectId}`).querySelector('.project-content');
+                    if (data.is_done) {
+                        projectElement.innerHTML = `<del>${projectElement.innerHTML}</del>`;
+                    } else {
+                        projectElement.innerHTML = projectElement.textContent;
+                    }
+                }
+            });
         };
     });
 

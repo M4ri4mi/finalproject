@@ -192,6 +192,15 @@ def delete_project(request, project_id):
         return redirect('home')
     return render(request, 'base/project_confirm_delete.html', {'project': project})
 
+@login_required
+def toggle_project_done(request, project_id):
+    if request.method == 'POST':
+        project = get_object_or_404(Project, id=project_id)
+        project.is_done = not project.is_done
+        project.save()
+        return JsonResponse({'success': True, 'is_done': project.is_done})
+    return JsonResponse({'success': False})
+
 
 
 
