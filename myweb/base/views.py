@@ -1,31 +1,75 @@
+# base/views.py
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Note
-from .forms import NoteForm
+from .models import Note, Task, Profile
+from .forms import NoteForm, TaskForm, ProfileForm
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 
-@login_required
 def home(request):
-    notes = Note.objects.filter(user=request.user)
-    
-    if request.method == 'POST':
-        note_form = NoteForm(request.POST)
-        if note_form.is_valid():
-            note = note_form.save(commit=False)
-            note.user = request.user
-            note.save()
-            messages.success(request, 'Note created successfully')
-            return redirect('home')
-    else:
+    if request.user.is_authenticated:
+        notes = Note.objects.filter(user=request.user)
+        tasks = Task.objects.filter(user=request.user)
         note_form = NoteForm()
+        task_form = TaskForm()
+
+        if request.method == 'POST':
+            if 'task_form' in request.POST:
+                task_form = TaskForm(request.POST)
+                if task_form.is_valid():
+                    task = task_form.save(commit=False)
+                    task.user = request.user
+                    task.save()
+                    messages.success(request, 'Task created successfully')
+                    return redirect('home')
+            elif 'note_form' in request.POST:
+                note_form = NoteForm(request.POST)
+                if note_form.is_valid():
+                    note = note_form.save(commit=False)
+                    note.user = request.user
+                    note.save()
+                    messages.success(request, 'Note created successfully')
+                    return redirect('home')
+
+        return render(request, 'base/home.html', {
+            'notes': notes,
+            'tasks': tasks,
+            'note_form': note_form,
+            'task_form': task_form,
+        })
+    else:
+        return render(request, 'base/existing_page.html')
 
     return render(request, 'base/home.html', {
         'notes': notes,
+        'tasks': tasks,
         'note_form': note_form,
+        'task_form': task_form,
     })
+
+@login_required
+def update_task(request, task_id):
+    task = get_object_or_404(Task, id=task_id)
+    if request.method == 'POST':
+        form = TaskForm(request.POST, instance=task)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Task updated successfully')
+            return redirect('home')
+    else:
+        form = TaskForm(instance=task)
+    return render(request, 'base/task_form.html', {'form': form})
+
+@login_required
+def delete_task(request, task_id):
+    task = get_object_or_404(Task, id=task_id)
+    if request.method == 'POST':
+        task.delete()
+        messages.success(request, 'Task deleted successfully')
+        return redirect('home')
+    return render(request, 'base/task_confirm_delete.html', {'task': task})
 
 @login_required
 def update_note(request, note_id):
@@ -95,4 +139,7 @@ def profile(request):
         'form': form,
         'username': request.user.username,
     })
+
+
+
 

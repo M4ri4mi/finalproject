@@ -1,6 +1,6 @@
 # forms.py
 from django import forms
-from .models import  Note, Profile
+from .models import  Note, Task, Profile
 
 
 
@@ -24,11 +24,17 @@ class ProfileForm(forms.ModelForm):
         return profile
 
 
+
+
 class NoteForm(forms.ModelForm):
     class Meta:
         model = Note
         fields = ['content']
 
+class TaskForm(forms.ModelForm):
+    class Meta:
+        model = Task
+        fields = ['content']
 
 
 
