@@ -28,10 +28,10 @@ class Note(models.Model):
 class Task(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
+    is_done = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.content[:50]
+        return self.content
 
 class Project(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

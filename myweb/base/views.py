@@ -8,6 +8,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from datetime import date
+from django.http import JsonResponse
 
 def home(request):
     if request.user.is_authenticated:
@@ -79,6 +80,16 @@ def delete_task(request, task_id):
         messages.success(request, 'Task deleted successfully')
         return redirect('home')
     return render(request, 'base/task_confirm_delete.html', {'task': task})
+
+@login_required
+def mark_task_done(request, task_id):
+    if request.method == 'POST':
+        task = get_object_or_404(Task, id=task_id)
+        task.is_done = True
+        task.save()
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False})
+
 
 @login_required
 def update_note(request, note_id):

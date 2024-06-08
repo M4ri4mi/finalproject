@@ -42,6 +42,10 @@
     text-decoration: none;
     cursor: pointer;
 }
+
+.task-done {
+    text-decoration: line-through;
+}
 </style>
 
 <h1>Welcome to the Home Page</h1>
@@ -156,16 +160,18 @@
     </div>
 
     <!-- My Tasks Section -->
+   
     <h2>My Tasks - {{ today_date }}</h2>
-    <ul id="tasksList">
-        {% for task in tasks %}
-        <li>
-            {{ task.content }}
+        <ul id="tasksList">
+    {% for task in tasks %}
+            <li id="task-{{ task.id }}">
+                <span class="task-content">{% if task.is_done %}<del>{{ task.content }}</del>{% else %}{{ task.content }}{% endif %}</span>
+            <button class="done-task-btn" data-task-id="{{ task.id }}">Done</button>
             <button class="edit-task-btn" data-task-id="{{ task.id }}">Edit</button>
             <button class="delete-task-btn" data-task-id="{{ task.id }}">Delete</button>
-        </li>
-        {% endfor %}
-    </ul>
+            </li>
+    {% endfor %}
+        </ul>
 
     <!-- Add Task Button -->
     <button id="addTaskBtn" class="btn btn-success">Add Task</button>
@@ -212,6 +218,27 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    // Handle task done button clicks
+    document.querySelectorAll('.done-task-btn').forEach(function(button) {
+        button.onclick = function(event) {
+            event.preventDefault();
+            var taskId = this.getAttribute('data-task-id');
+            fetch(`/task/${taskId}/done/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({})
+            }).then(response => {
+                if (response.ok) {
+                    var taskElement = document.getElementById(`task-${taskId}`).querySelector('.task-content');
+                    taskElement.innerHTML = `<del>${taskElement.innerHTML}</del>`;
+                }
+            });
+        };
+    });
+
     // Project popup elements
     var projectPopup = document.getElementById("projectPopup");
     var projectBtn = document.getElementById("addProjectBtn");
@@ -440,6 +467,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 {% endblock %}
+
 
 
 
