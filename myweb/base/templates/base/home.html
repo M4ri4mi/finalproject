@@ -87,8 +87,11 @@
             <span class="close">&times;</span>
             <form id="editProjectForm" method="post">
                 {% csrf_token %}
-                <textarea id="editProjectTitle" name="title"></textarea>
+                <label for="editProjectTitle">Title</label>
+                <input type="text" id="editProjectTitle" name="title">
+                <label for="editProjectDescription">Description</label>
                 <textarea id="editProjectDescription" name="description"></textarea>
+                <label for="editProjectDueDate">Due Date</label>
                 <input type="date" id="editProjectDueDate" name="due_date">
                 <button type="submit">Update</button>
             </form>
@@ -288,6 +291,25 @@ document.addEventListener('DOMContentLoaded', function () {
     updateTaskRatio();
     updateProjectRatio();
 
+    // Handle project edit button clicks
+    document.querySelectorAll('.edit-project-btn').forEach(function(button) {
+        button.onclick = function(event) {
+            event.preventDefault();
+            var projectId = this.getAttribute('data-project-id');
+            var projectElement = document.getElementById(`project-${projectId}`);
+            var projectContent = projectElement.querySelector('.project-content').textContent.split(' - ');
+            var projectTitle = projectContent[0];
+            var projectDescription = projectContent[1].split(' (Due: ')[0];
+            var projectDueDate = projectContent[1].split(' (Due: ')[1].replace(')', '');
+            
+            document.getElementById('editProjectTitle').value = projectTitle;
+            document.getElementById('editProjectDescription').value = projectDescription;
+            document.getElementById('editProjectDueDate').value = projectDueDate;
+            document.getElementById('editProjectForm').action = `/project/${projectId}/update/`;
+            document.getElementById('projectEditPopup').style.display = "block";
+        };
+    });
+
     // Handle project delete button clicks
     document.querySelectorAll('.delete-project-btn').forEach(function(button) {
         button.onclick = function(event) {
@@ -448,6 +470,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 {% endblock %}
+
 
 
 
