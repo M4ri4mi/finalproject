@@ -9,9 +9,14 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from datetime import date
 from django.http import JsonResponse
+import random
 
 def home(request):
     if request.user.is_authenticated:
+        # Compute today's date
+        today_date = date.today().strftime("%B %d, %Y")
+        print(f"Today's date with cache busting: {today_date}")
+
         notes = Note.objects.filter(user=request.user)
         tasks = Task.objects.filter(user=request.user)
         projects = Project.objects.filter(user=request.user)
@@ -52,8 +57,6 @@ def home(request):
                     project.save()
                     messages.success(request, 'Project created successfully')
                     return redirect('home')
-
-        today_date = date.today().strftime("%B %d, %Y")
 
         return render(request, 'base/home.html', {
             'notes': notes,
