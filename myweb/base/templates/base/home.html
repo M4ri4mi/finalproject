@@ -320,56 +320,38 @@ document.addEventListener('DOMContentLoaded', function () {
         };
     });
 
+    // Close popup elements
+    document.querySelectorAll('.popup .close').forEach(function(closeButton) {
+        closeButton.onclick = function() {
+            this.closest('.popup').style.display = 'none';
+        };
+    });
+
+    window.onclick = function(event) {
+        document.querySelectorAll('.popup').forEach(function(popup) {
+            if (event.target == popup) {
+                popup.style.display = "none";
+            }
+        });
+    };
+
     // Note popup elements
     var notePopup = document.getElementById("notePopup");
     var noteBtn = document.getElementById("addNoteBtn");
-    var noteSpan = notePopup.getElementsByClassName("close")[0];
 
     noteBtn.onclick = function() {
         notePopup.style.display = "block";
     }
 
-    noteSpan.onclick = function() {
-        notePopup.style.display = "none";
-    }
-
-    window.onclick = function(event) {
-        if (event.target == notePopup) {
-            notePopup.style.display = "none";
-        }
-    }
-
     // Note edit popup elements
     var noteEditPopup = document.getElementById("noteEditPopup");
-    var noteEditSpan = noteEditPopup.getElementsByClassName("close")[0];
-
-    noteEditSpan.onclick = function() {
-        noteEditPopup.style.display = "none";
-    }
-
-    window.onclick = function(event) {
-        if (event.target == noteEditPopup) {
-            noteEditPopup.style.display = "none";
-        }
-    }
 
     // Note delete popup elements
     var noteDeletePopup = document.getElementById("noteDeletePopup");
-    var noteDeleteSpan = noteDeletePopup.getElementsByClassName("close")[0];
     var cancelDeleteBtn = document.getElementById("cancelDeleteBtn");
-
-    noteDeleteSpan.onclick = function() {
-        noteDeletePopup.style.display = "none";
-    }
 
     cancelDeleteBtn.onclick = function() {
         noteDeletePopup.style.display = "none";
-    }
-
-    window.onclick = function(event) {
-        if (event.target == noteDeletePopup) {
-            noteDeletePopup.style.display = "none";
-        }
     }
 
     // Handle note edit button clicks
@@ -397,53 +379,20 @@ document.addEventListener('DOMContentLoaded', function () {
     // Task popup elements
     var taskPopup = document.getElementById("taskPopup");
     var taskBtn = document.getElementById("addTaskBtn");
-    var taskSpan = taskPopup.getElementsByClassName("close")[0];
 
     taskBtn.onclick = function() {
         taskPopup.style.display = "block";
     }
 
-    taskSpan.onclick = function() {
-        taskPopup.style.display = "none";
-    }
-
-    window.onclick = function(event) {
-        if (event.target == taskPopup) {
-            taskPopup.style.display = "none";
-        }
-    }
-
     // Task edit popup elements
     var taskEditPopup = document.getElementById("taskEditPopup");
-    var taskEditSpan = taskEditPopup.getElementsByClassName("close")[0];
-
-    taskEditSpan.onclick = function() {
-        taskEditPopup.style.display = "none";
-    }
-
-    window.onclick = function(event) {
-        if (event.target == taskEditPopup) {
-            taskEditPopup.style.display = "none";
-        }
-    }
 
     // Task delete popup elements
     var taskDeletePopup = document.getElementById("taskDeletePopup");
-    var taskDeleteSpan = taskDeletePopup.getElementsByClassName("close")[0];
     var cancelTaskDeleteBtn = document.getElementById("cancelTaskDeleteBtn");
-
-    taskDeleteSpan.onclick = function() {
-        taskDeletePopup.style.display = "none";
-    }
 
     cancelTaskDeleteBtn.onclick = function() {
         taskDeletePopup.style.display = "none";
-    }
-
-    window.onclick = function(event) {
-        if (event.target == taskDeletePopup) {
-            taskDeletePopup.style.display = "none";
-        }
     }
 
     // Handle task edit button clicks
@@ -470,6 +419,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 {% endblock %}
+
 
 
 
