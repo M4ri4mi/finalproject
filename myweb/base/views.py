@@ -18,7 +18,6 @@ def home(request):
                 task = form.save(commit=False)
                 task.user = request.user
                 task.save()
-                form.save_m2m()  # Save the many-to-many data for the form
                 return redirect('home')
         else:
             form = TaskForm()
