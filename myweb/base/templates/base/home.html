@@ -416,9 +416,26 @@ document.addEventListener('DOMContentLoaded', function () {
             taskDeletePopup.style.display = "block";
         };
     });
+
+    // Handle Add Project Button click
+    var projectPopup = document.getElementById("projectPopup");
+    var projectBtn = document.getElementById("addProjectBtn");
+    
+    projectBtn.onclick = function() {
+        projectPopup.style.display = "block";
+    }
+
+    // Close Project Popup
+    var projectCloseBtn = projectPopup.getElementsByClassName("close")[0];
+    projectCloseBtn.onclick = function() {
+        projectPopup.style.display = "none";
+    }
 });
 </script>
 {% endblock %}
+
+
+
 
 
 
