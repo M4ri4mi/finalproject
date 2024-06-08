@@ -49,6 +49,31 @@
 {% if user.is_authenticated %}
     <a href="{% url 'profile' %}" class="profile-link"><h1>{{ request.user.username }}</h1></a>
 
+    <!-- My Projects Section -->
+    <h2>My Projects</h2>
+    <ul id="projectsList">
+        {% for project in projects %}
+        <li>
+            {{ project.title }} - {{ project.description }} (Due: {{ project.due_date }})
+        </li>
+        {% endfor %}
+    </ul>
+
+    <!-- Add Project Button -->
+    <button id="addProjectBtn" class="btn btn-success">Add Project</button>
+
+    <!-- The Project Popup -->
+    <div id="projectPopup" class="popup">
+        <div class="popup-content">
+            <span class="close">&times;</span>
+            <form id="addProjectForm" action="{% url 'home' %}" method="post">
+                {% csrf_token %}
+                {{ project_form.as_p }}
+                <button type="submit" name="project_form">Create</button>
+            </form>
+        </div>
+    </div>
+
     <!-- My Notes Section -->
     <h2>My Notes</h2>
     <ul id="notesList">
@@ -158,10 +183,29 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    // Project popup elements
+    var projectPopup = document.getElementById("projectPopup");
+    var projectBtn = document.getElementById("addProjectBtn");
+    var projectSpan = projectPopup.getElementsByClassName("close")[0];
+
+    projectBtn.onclick = function() {
+        projectPopup.style.display = "block";
+    }
+
+    projectSpan.onclick = function() {
+        projectPopup.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == projectPopup) {
+            projectPopup.style.display = "none";
+        }
+    }
+
     // Note popup elements
     var notePopup = document.getElementById("notePopup");
     var noteBtn = document.getElementById("addNoteBtn");
-    var noteSpan = document.getElementsByClassName("close")[0];
+    var noteSpan = notePopup.getElementsByClassName("close")[0];
 
     noteBtn.onclick = function() {
         notePopup.style.display = "block";
@@ -179,7 +223,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Note edit popup elements
     var noteEditPopup = document.getElementById("noteEditPopup");
-    var noteEditSpan = document.getElementsByClassName("close")[1];
+    var noteEditSpan = noteEditPopup.getElementsByClassName("close")[0];
 
     noteEditSpan.onclick = function() {
         noteEditPopup.style.display = "none";
@@ -193,7 +237,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Note delete popup elements
     var noteDeletePopup = document.getElementById("noteDeletePopup");
-    var noteDeleteSpan = document.getElementsByClassName("close")[2];
+    var noteDeleteSpan = noteDeletePopup.getElementsByClassName("close")[0];
     var cancelDeleteBtn = document.getElementById("cancelDeleteBtn");
 
     noteDeleteSpan.onclick = function() {
@@ -235,7 +279,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Task popup elements
     var taskPopup = document.getElementById("taskPopup");
     var taskBtn = document.getElementById("addTaskBtn");
-    var taskSpan = document.getElementsByClassName("close")[3];
+    var taskSpan = taskPopup.getElementsByClassName("close")[0];
 
     taskBtn.onclick = function() {
         taskPopup.style.display = "block";
@@ -253,7 +297,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Task edit popup elements
     var taskEditPopup = document.getElementById("taskEditPopup");
-    var taskEditSpan = document.getElementsByClassName("close")[4];
+    var taskEditSpan = taskEditPopup.getElementsByClassName("close")[0];
 
     taskEditSpan.onclick = function() {
         taskEditPopup.style.display = "none";
@@ -267,7 +311,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Task delete popup elements
     var taskDeletePopup = document.getElementById("taskDeletePopup");
-    var taskDeleteSpan = document.getElementsByClassName("close")[5];
+    var taskDeleteSpan = taskDeletePopup.getElementsByClassName("close")[0];
     var cancelTaskDeleteBtn = document.getElementById("cancelTaskDeleteBtn");
 
     taskDeleteSpan.onclick = function() {
@@ -308,6 +352,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 {% endblock %}
+
 
 
 

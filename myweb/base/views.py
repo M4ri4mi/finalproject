@@ -2,51 +2,53 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Note, Task, Profile
-from .forms import NoteForm, TaskForm, ProfileForm
+from .models import Note, Task, Profile, Project
+from .forms import NoteForm, TaskForm, ProfileForm, ProjectForm
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 
 def home(request):
-    if request.user.is_authenticated:
-        notes = Note.objects.filter(user=request.user)
-        tasks = Task.objects.filter(user=request.user)
-        note_form = NoteForm()
-        task_form = TaskForm()
+    notes = Note.objects.filter(user=request.user)
+    tasks = Task.objects.filter(user=request.user)
+    projects = Project.objects.filter(user=request.user)
+    note_form = NoteForm()
+    task_form = TaskForm()
+    project_form = ProjectForm()
 
-        if request.method == 'POST':
-            if 'task_form' in request.POST:
-                task_form = TaskForm(request.POST)
-                if task_form.is_valid():
-                    task = task_form.save(commit=False)
-                    task.user = request.user
-                    task.save()
-                    messages.success(request, 'Task created successfully')
-                    return redirect('home')
-            elif 'note_form' in request.POST:
-                note_form = NoteForm(request.POST)
-                if note_form.is_valid():
-                    note = note_form.save(commit=False)
-                    note.user = request.user
-                    note.save()
-                    messages.success(request, 'Note created successfully')
-                    return redirect('home')
-
-        return render(request, 'base/home.html', {
-            'notes': notes,
-            'tasks': tasks,
-            'note_form': note_form,
-            'task_form': task_form,
-        })
-    else:
-        return render(request, 'base/existing_page.html')
+    if request.method == 'POST':
+        if 'task_form' in request.POST:
+            task_form = TaskForm(request.POST)
+            if task_form.is_valid():
+                task = task_form.save(commit=False)
+                task.user = request.user
+                task.save()
+                messages.success(request, 'Task created successfully')
+                return redirect('home')
+        elif 'note_form' in request.POST:
+            note_form = NoteForm(request.POST)
+            if note_form.is_valid():
+                note = note_form.save(commit=False)
+                note.user = request.user
+                note.save()
+                messages.success(request, 'Note created successfully')
+                return redirect('home')
+        elif 'project_form' in request.POST:
+            project_form = ProjectForm(request.POST)
+            if project_form.is_valid():
+                project = project_form.save(commit=False)
+                project.user = request.user
+                project.save()
+                messages.success(request, 'Project created successfully')
+                return redirect('home')
 
     return render(request, 'base/home.html', {
         'notes': notes,
         'tasks': tasks,
+        'projects': projects,
         'note_form': note_form,
         'task_form': task_form,
+        'project_form': project_form,
     })
 
 @login_required
