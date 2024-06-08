@@ -142,6 +142,28 @@ def profile(request):
         'username': request.user.username,
     })
 
+@login_required
+def update_project(request, project_id):
+    project = get_object_or_404(Project, id=project_id)
+    if request.method == 'POST':
+        form = ProjectForm(request.POST, instance=project)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Project updated successfully')
+            return redirect('home')
+    else:
+        form = ProjectForm(instance=project)
+    return render(request, 'base/project_form.html', {'form': form})
+
+@login_required
+def delete_project(request, project_id):
+    project = get_object_or_404(Project, id=project_id)
+    if request.method == 'POST':
+        project.delete()
+        messages.success(request, 'Project deleted successfully')
+        return redirect('home')
+    return render(request, 'base/project_confirm_delete.html', {'project': project})
+
 
 
 

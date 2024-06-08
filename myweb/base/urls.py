@@ -11,6 +11,8 @@ urlpatterns = [
     path('note/<int:note_id>/delete/', views.delete_note, name='delete-note'),
     path('task/<int:task_id>/update/', views.update_task, name='update-task'),
     path('task/<int:task_id>/delete/', views.delete_task, name='delete-task'),
+    path('project/<int:project_id>/update/', views.update_project, name='update_project'),
+    path('project/<int:project_id>/delete/', views.delete_project, name='delete_project'),
     path('register/', views.register_page, name='register'),
     path('accounts/login/', views.login_view, name='accounts_login')
 ]
