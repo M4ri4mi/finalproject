@@ -1,0 +1,19 @@
+<!-- base/overdue_projects.html -->
+{% extends 'main.html' %}
+{% load static %}
+
+{% block title %}Overdue Projects{% endblock %}
+
+{% block content %}
+<h1>Overdue Projects</h1>
+<ul>
+    {% for project in overdue_projects %}
+    <li>
+        <strong>{{ project.title }}</strong><br>
+        {{ project.description }}<br>
+        Due Date: {{ project.due_date }}
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}
+

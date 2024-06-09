@@ -5,9 +5,15 @@
 {% if request.user.is_authenticated %}
     <h3>Hello {{ request.user.username }}</h3>
     <a href="{% url 'logout' %}"><h1>LOGOUT</h1></a>
+
+    <form action="{% url 'search_results' %}" method="get" style="display: inline;">
+        <input type="text" name="q" placeholder="Search for something..." />
+        <button type="submit">Search</button>
+    </form>
 {% else %}
     <a href="{% url 'login' %}"><h1>LOGIN/SIGN UP</h1></a>
 {% endif %}
 <hr>
+
 
 

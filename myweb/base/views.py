@@ -10,6 +10,8 @@ from django.contrib.auth.models import User
 from datetime import date
 from django.http import JsonResponse
 import random
+from django.db.models import Q
+
 
 def home(request):
     if request.user.is_authenticated:
@@ -213,6 +215,24 @@ def toggle_project_done(request, project_id):
         project.save()
         return JsonResponse({'success': True, 'is_done': project.is_done})
     return JsonResponse({'success': False})
+
+def search_results(request):
+    query = request.GET.get('q')
+    if query:
+        notes = Note.objects.filter(Q(content__icontains=query), user=request.user)
+        tasks = Task.objects.filter(Q(content__icontains=query), user=request.user)
+        projects = Project.objects.filter(
+            Q(title__icontains=query) | Q(description__icontains=query), user=request.user
+        )
+    else:
+        notes = tasks = projects = []
+
+    return render(request, 'base/search_results.html', {
+        'query': query,
+        'notes': notes,
+        'tasks': tasks,
+        'projects': projects,
+    })
 
 
 
