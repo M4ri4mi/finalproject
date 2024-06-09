@@ -4,7 +4,6 @@
 
 {% if request.user.is_authenticated %}
     <h3>Hello {{ request.user.username }}</h3>
-
     <form action="{% url 'search_results' %}" method="get" style="display: inline;">
         <input type="text" name="q" placeholder="Search for something..." />
         <button type="submit">Search</button>
@@ -18,7 +17,7 @@
         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
             <a class="dropdown-item" href="{% url 'overdue_projects' %}">Overdue Projects</a>
             <a class="dropdown-item" href="{% url 'upcoming_projects' %}">Upcoming Projects</a>
-            <a class="dropdown-item" href="#">Recent Tasks</a>
+            <a class="dropdown-item" href="{% url 'recent_tasks' %}">Recent Tasks</a>
         </div>
     </div>
 
@@ -27,6 +26,7 @@
     <a href="{% url 'login' %}"><h1>LOGIN/SIGN UP</h1></a>
 {% endif %}
 <hr>
+
 
 
 

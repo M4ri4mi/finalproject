@@ -16,7 +16,6 @@ from django.utils import timezone
 
 def home(request):
     if request.user.is_authenticated:
-        today_date = date.today().strftime("%B %d, %Y")
         notes = Note.objects.filter(user=request.user)
         tasks = Task.objects.filter(user=request.user)
         projects = Project.objects.filter(user=request.user)
@@ -38,6 +37,7 @@ def home(request):
                 if task_form.is_valid():
                     task = task_form.save(commit=False)
                     task.user = request.user
+                    task.date_added = date.today()  # Add date when task is added
                     task.save()
                     messages.success(request, 'Task created successfully')
                     return redirect('home')
@@ -57,6 +57,8 @@ def home(request):
                     project.save()
                     messages.success(request, 'Project created successfully')
                     return redirect('home')
+
+        today_date = date.today().strftime("%B %d, %Y")
 
         return render(request, 'base/home.html', {
             'notes': notes,
@@ -244,7 +246,20 @@ def upcoming_projects(request):
     upcoming_projects = Project.objects.filter(user=request.user, due_date__gte=current_date, is_done=False)
     return render(request, 'base/upcoming_projects.html', {'upcoming_projects': upcoming_projects})
 
+@login_required
+def recent_tasks(request):
+    if request.user.is_authenticated:
+        tasks = Task.objects.filter(user=request.user).order_by('-date_added')
+        tasks_by_date = {}
+        for task in tasks:
+            date_str = task.date_added.strftime("%B %d, %Y")
+            if date_str not in tasks_by_date:
+                tasks_by_date[date_str] = []
+            tasks_by_date[date_str].append(task)
 
+        return render(request, 'base/recent_tasks.html', {
+            'tasks_by_date': tasks_by_date,
+        })
 
 
 
