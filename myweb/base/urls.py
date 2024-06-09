@@ -20,6 +20,8 @@ urlpatterns = [
     path('search/', views.search_results, name='search_results'),
     path('overdue_projects/', views.overdue_projects, name='overdue_projects'), 
     path('upcoming_projects/', views.upcoming_projects, name='upcoming_projects'),
+    path('tags/', views.tag_list, name='tag_list'),
+    path('tags/<int:tag_id>/', views.filter_by_tag, name='filter_by_tag'),
 ]
 
 

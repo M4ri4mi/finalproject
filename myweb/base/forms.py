@@ -1,8 +1,7 @@
-# forms.py
+# base/forms.py
+
 from django import forms
-from .models import  Note, Task, Profile, Project
-
-
+from .models import Note, Task, Profile, Project, Tag
 
 class ProfileForm(forms.ModelForm):
     email = forms.EmailField(required=True)
@@ -23,28 +22,29 @@ class ProfileForm(forms.ModelForm):
             profile.save()
         return profile
 
-
-
-
 class NoteForm(forms.ModelForm):
+    tags = forms.ModelMultipleChoiceField(queryset=Tag.objects.all(), required=False, widget=forms.CheckboxSelectMultiple)
+
     class Meta:
         model = Note
-        fields = ['content']
+        fields = ['content', 'tags']
 
 class TaskForm(forms.ModelForm):
+    tags = forms.ModelMultipleChoiceField(queryset=Tag.objects.all(), required=False, widget=forms.CheckboxSelectMultiple)
+
     class Meta:
         model = Task
-        fields = ['content']
+        fields = ['content', 'tags']
 
 class ProjectForm(forms.ModelForm):
+    tags = forms.ModelMultipleChoiceField(queryset=Tag.objects.all(), required=False, widget=forms.CheckboxSelectMultiple)
+
     class Meta:
         model = Project
-        fields = ['title', 'description', 'due_date']
+        fields = ['title', 'description', 'due_date', 'tags']
         widgets = {
             'due_date': forms.DateInput(attrs={'type': 'date'})
         }
-
-
 
 
 

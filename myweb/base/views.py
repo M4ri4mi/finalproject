@@ -2,7 +2,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Note, Task, Profile, Project
+from .models import Note, Task, Profile, Project, Tag
 from .forms import NoteForm, TaskForm, ProfileForm, ProjectForm
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
@@ -14,12 +14,14 @@ from django.db.models import Q
 from django.utils import timezone
 
 
+
 def home(request):
     if request.user.is_authenticated:
         today_date = date.today()
         tasks = Task.objects.filter(user=request.user, date_added=today_date)
         projects = Project.objects.filter(user=request.user)
         notes = Note.objects.filter(user=request.user)
+        tags = Tag.objects.all()
         note_form = NoteForm()
         task_form = TaskForm()
         project_form = ProjectForm()
@@ -39,6 +41,7 @@ def home(request):
                     task = task_form.save(commit=False)
                     task.user = request.user
                     task.save()
+                    task_form.save_m2m()
                     messages.success(request, 'Task created successfully')
                     return redirect('home')
             elif 'note_form' in request.POST:
@@ -47,6 +50,7 @@ def home(request):
                     note = note_form.save(commit=False)
                     note.user = request.user
                     note.save()
+                    note_form.save_m2m()
                     messages.success(request, 'Note created successfully')
                     return redirect('home')
             elif 'project_form' in request.POST:
@@ -55,6 +59,7 @@ def home(request):
                     project = project_form.save(commit=False)
                     project.user = request.user
                     project.save()
+                    project_form.save_m2m()
                     messages.success(request, 'Project created successfully')
                     return redirect('home')
 
@@ -64,6 +69,7 @@ def home(request):
             'notes': notes,
             'tasks': tasks,
             'projects': projects,
+            'tags': tags,
             'note_form': note_form,
             'task_form': task_form,
             'project_form': project_form,
@@ -73,6 +79,7 @@ def home(request):
         })
     else:
         return render(request, 'base/existing_page.html')
+
 
 @login_required
 def update_task(request, task_id):
@@ -113,8 +120,6 @@ def toggle_task_done(request, task_id):
         task.save()
         return JsonResponse({'success': True, 'is_done': task.is_done})
     return JsonResponse({'success': False})
-
-
 
 @login_required
 def update_note(request, note_id):
@@ -261,5 +266,20 @@ def recent_tasks(request):
             'tasks_by_date': tasks_by_date,
         })
 
+@login_required
+def tag_list(request):
+    tags = Tag.objects.all()
+    return render(request, 'base/tag_list.html', {'tags': tags})
 
-
+@login_required
+def filter_by_tag(request, tag_id):
+    tag = get_object_or_404(Tag, id=tag_id)
+    tasks = Task.objects.filter(user=request.user, tags=tag)
+    notes = Note.objects.filter(user=request.user, tags=tag)
+    projects = Project.objects.filter(user=request.user, tags=tag)
+    return render(request, 'base/filter_by_tag.html', {
+        'tag': tag,
+        'tasks': tasks,
+        'notes': notes,
+        'projects': projects
+    })

@@ -1,0 +1,12 @@
+{% extends 'main.html' %}
+
+{% block title %}Tags{% endblock %}
+
+{% block content %}
+<h1>Tags</h1>
+<ul>
+    {% for tag in tags %}
+    <li><a href="{% url 'filter_by_tag' tag.id %}">{{ tag.name }}</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}

@@ -1,4 +1,3 @@
-<!-- base/templates/navbar.html -->
 <a href="{% url 'home' %}"><h1>LOGO</h1></a>
 <a href="{% url 'home' %}"><h1>HOME</h1></a>
 
@@ -21,11 +20,23 @@
         </div>
     </div>
 
+    <div class="dropdown show">
+        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="tagsDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Tags
+        </a>
+        <div class="dropdown-menu" aria-labelledby="tagsDropdownMenuLink">
+            {% for tag in tags %}
+                <a class="dropdown-item" href="{% url 'filter_by_tag' tag.id %}">{{ tag.name }}</a>
+            {% endfor %}
+        </div>
+    </div>
+
     <a href="{% url 'logout' %}"><h1>LOGOUT</h1></a>
 {% else %}
     <a href="{% url 'login' %}"><h1>LOGIN/SIGN UP</h1></a>
 {% endif %}
 <hr>
+
 
 
 

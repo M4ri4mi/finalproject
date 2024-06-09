@@ -1,0 +1,28 @@
+{% extends 'main.html' %}
+
+{% block title %}{{ tag.name }} - Filtered Results{% endblock %}
+
+{% block content %}
+<h1>Items tagged with "{{ tag.name }}"</h1>
+
+<h2>Notes</h2>
+<ul>
+    {% for note in notes %}
+    <li>{{ note.content }}</li>
+    {% endfor %}
+</ul>
+
+<h2>Tasks</h2>
+<ul>
+    {% for task in tasks %}
+    <li>{{ task.content }}</li>
+    {% endfor %}
+</ul>
+
+<h2>Projects</h2>
+<ul>
+    {% for project in projects %}
+    <li>{{ project.title }} - {{ project.description }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}
