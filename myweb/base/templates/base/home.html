@@ -54,31 +54,252 @@
     padding: 2px 5px;
     margin: 2px;
 }
+
+/* Container for all notes */
+.notes-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Space between the note cards */
+    justify-content: flex-start; /* Align items to the start */
+    padding: 20px;
+    list-style-type: none; /* Remove default list styling */
+    margin: 0;
+}
+
+/* Wrapper for each note and its buttons */
+.note-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 300px; /* Match the card width */
+}
+
+/* Styles for each note card */
+.note-card {
+    background: #274D3B; /* Light purple background */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%; /* Full width of the wrapper */
+    padding: 20px;
+    height: 200px; /* Make it more square */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    color: #E8EAED;
+}
+
+.note-content {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+}
+
+.note-tags {
+    margin-bottom: 10px;
+}
+
+/* Note Buttons */
+.note-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px; /* Add some space above the buttons */
+    justify-content: flex-start; /* Align buttons to the left */
+    width: 100%;
+}
+
+.note-buttons .btn {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.note-buttons .btn-primary {
+    background-color: #202124;
+    color: white;
+}
+
+.note-buttons .btn-danger {
+    background-color: #202124;
+    color: white;
+}
+
+/* Container for the task list card */
+.tasks-card {
+    background: #f8f9fa; /* Light grey background */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 20px auto; /* Center the card */
+    max-width: 600px; /* Adjust the width of the card */
+}
+
+/* Styles for each task item */
+.task-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Styles for task buttons */
+.task-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.task-buttons .btn {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.task-buttons .btn-success {
+    background-color: #28a745;
+    color: white;
+}
+
+.task-buttons .btn-primary {
+    background-color: #007bff;
+    color: white;
+}
+
+.task-buttons .btn-danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Ensure the last task item doesn't have a border at the bottom */
+.task-item:last-child {
+    border-bottom: none;
+}
+
+/* Container for all projects */
+.projects-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Space between the project cards */
+    justify-content: center; /* Center the project cards */
+    padding: 20px;
+    list-style-type: none; /* Remove default list styling */
+    margin: 0 auto; /* Center the container */
+    max-width: 1200px; /* Adjust the width of the container */
+}
+
+/* Styles for each project card */
+.project-card {
+    background: #e6e6fa; /* Light purple background */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 300px; /* Fixed width for each card */
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.project-content {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+}
+
+.project-tags {
+    margin-bottom: 10px;
+}
+
+.project-buttons {
+    display: flex;
+    justify-content: flex-start; /* Align buttons to the left */
+    gap: 10px;
+}
+
+.project-title {
+    font-weight: bold;
+    
+}
+/* Navbar background color */
+.navbar {
+    background-color: #E34532 !important;
+}
+
+/* Navbar brand styling */
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+    color: #ffffff !important;
+}
+
+/* Navbar links styling */
+.navbar .nav-link {
+    color: #ffffff !important;
+}
+
+.navbar .nav-link:hover {
+    color: #d4d4d4 !important;
+}
+
+/* Dropdown menu background color */
+.dropdown-menu {
+    background-color: #E34532;
+}
+
+/* Dropdown item styling */
+.dropdown-item {
+    color: #ffffff;
+}
+
+.dropdown-item:hover {
+    background-color: #d63324;
+}
+
+/* Search form input margin */
+.form-inline .form-control {
+    margin-right: 10px;
+}
+
 </style>
 
 {% if user.is_authenticated %}
     <a href="{% url 'profile' %}" class="profile-link"><h1>{{ request.user.username }}</h1></a>
 
-    <!-- My Projects Section -->
-    <h2>My Projects (<span id="projectRatio">{{ project_ratio }}</span>)</h2>
-    <ul id="projectsList">
+    <!-- My Projects Section with Add Button -->
+    <div class="header-with-button">
+        <h2>My Projects (<span id="projectRatio">{{ project_ratio }}</span>)</h2>
+        <button id="addProjectBtn" class="btn btn-success">Add Project</button>
+    </div>
+    <div id="projectsContainer" class="projects-cards">
         {% for project in projects %}
-        <li id="project-{{ project.id }}">
-            <span class="project-content">{% if project.is_done %}<del>{{ project.title }} - {{ project.description }} (Due: {{ project.due_date }})</del>{% else %}{{ project.title }} - {{ project.description }} (Due: {{ project.due_date }}){% endif %}</span>
-            <div>
+        <div id="project-{{ project.id }}" class="project-card">
+            <div class="project-content">
+                    {% if project.is_done %}
+                        <del>
+                            <div class="project-title">{{ project.title }}</div>
+                            <div>{{ project.description }}</div>
+                            <div>(Due: {{ project.due_date }})</div>
+                        </del>
+                    {% else %}
+                        <div class="project-title">{{ project.title }}</div>
+                        <div>{{ project.description }}</div>
+                        <div>(Due: {{ project.due_date }})</div>
+                    {% endif %}
+                </div>
+            <div class="project-tags">
                 {% for tag in project.tags.all %}
                     <span class="tag-label">{{ tag.name }}</span>
                 {% endfor %}
             </div>
-            <button class="done-project-btn" data-project-id="{{ project.id }}">Done</button>
-            <button class="edit-project-btn" data-project-id="{{ project.id }}">Edit</button>
-            <button class="delete-project-btn" data-project-id="{{ project.id }}">Delete</button>
-        </li>
+            <div class="project-buttons">
+                <button class="btn btn-primary edit-project-btn" data-project-id="{{ project.id }}">Edit</button>
+                <button class="btn btn-danger delete-project-btn" data-project-id="{{ project.id }}">Delete</button>
+                <button class="btn btn-success done-project-btn" data-project-id="{{ project.id }}">Done</button>
+            </div>
+        </div>
         {% endfor %}
-    </ul>
-
-    <!-- Add Project Button -->
-    <button id="addProjectBtn" class="btn btn-success">Add Project</button>
+    </div>
 
     <!-- The Project Popup -->
     <div id="projectPopup" class="popup">
@@ -122,25 +343,31 @@
         </div>
     </div>
 
-    <!-- My Notes Section -->
-    <h2>My Notes</h2>
-    <ul id="notesList">
+    <!-- My Notes Section with Add Button -->
+    <div class="header-with-button">
+        <h2>My Notes</h2>
+        <button id="addNoteBtn" class="btn btn-success">Add Note</button>
+    </div>
+    <div id="notesContainer" class="notes-cards">
         {% for note in notes %}
-        <li>
-            {{ note.content }}
-            <div>
-                {% for tag in note.tags.all %}
-                    <span class="tag-label">{{ tag.name }}</span>
-                {% endfor %}
+        <div class="note-wrapper">
+            <div id="note-{{ note.id }}" class="note-card">
+                <div class="note-content">
+                    {{ note.content }}
+                </div>
+                <div class="note-tags">
+                    {% for tag in note.tags.all %}
+                        <span class="tag-label">{{ tag.name }}</span>
+                    {% endfor %}
+                </div>
             </div>
-            <button class="edit-note-btn" data-note-id="{{ note.id }}">Edit</button>
-            <button class="delete-note-btn" data-note-id="{{ note.id }}">Delete</button>
-        </li>
+            <div class="note-buttons">
+                <button class="btn btn-primary edit-note-btn" data-note-id="{{ note.id }}">Edit</button>
+                <button class="btn btn-danger delete-note-btn" data-note-id="{{ note.id }}">Delete</button>
+            </div>
+        </div>
         {% endfor %}
-    </ul>
-
-    <!-- Add Note Button -->
-    <button id="addNoteBtn" class="btn btn-success">Add Note</button>
+    </div>
 
     <!-- The Note Popup -->
     <div id="notePopup" class="popup">
@@ -179,26 +406,25 @@
         </div>
     </div>
 
-    <!-- My Tasks Section -->
-    <h2>My Tasks - {{ today_date }} (<span id="taskRatio">{{ task_ratio }}</span>)</h2>
-    <ul id="tasksList">
-        {% for task in tasks %}
-        <li id="task-{{ task.id }}">
-            <span class="task-content">{% if task.is_done %}<del>{{ task.content }}</del>{% else %}{{ task.content }}{% endif %}</span>
-            <div>
-                {% for tag in task.tags.all %}
-                    <span class="tag-label">{{ tag.name }}</span>
-                {% endfor %}
-            </div>
-            <button class="done-task-btn" data-task-id="{{ task.id }}">Done</button>
-            <button class="edit-task-btn" data-task-id="{{ task.id }}">Edit</button>
-            <button class="delete-task-btn" data-task-id="{{ task.id }}">Delete</button>
-        </li>
-        {% endfor %}
-    </ul>
-
-    <!-- Add Task Button -->
-    <button id="addTaskBtn" class="btn btn-success">Add Task</button>
+    <!-- My Tasks Section with Add Button -->
+    <div class="header-with-button">
+        <h2>My Tasks - {{ today_date }} (<span id="taskRatio">{{ task_ratio }}</span>)</h2>
+        <button id="addTaskBtn" class="btn btn-success">Add Task</button>
+    </div>
+    <div class="tasks-card">
+        <ul id="tasksList">
+            {% for task in tasks %}
+            <li id="task-{{ task.id }}" class="task-item">
+                <span class="task-content">{% if task.is_done %}<del>{{ task.content }}</del>{% else %}{{ task.content }}{% endif %}</span>
+                <div class="task-buttons">
+                    <button class="btn btn-success done-task-btn" data-task-id="{{ task.id }}">Done</button>
+                    <button class="btn btn-primary edit-task-btn" data-task-id="{{ task.id }}">Edit</button>
+                    <button class="btn btn-danger delete-task-btn" data-task-id="{{ task.id }}">Delete</button>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
 
     <!-- The Task Popup -->
     <div id="taskPopup" class="popup">
@@ -241,219 +467,234 @@
 {% endif %}
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    function updateTaskRatio() {
-        const totalTasks = document.querySelectorAll('#tasksList li').length;
-        const doneTasks = document.querySelectorAll('#tasksList li .task-content del').length;
-        const taskRatio = `${doneTasks}/${totalTasks}`;
-        document.getElementById('taskRatio').textContent = taskRatio;
-    }
-
-    function updateProjectRatio() {
-        const totalProjects = document.querySelectorAll('#projectsList li').length;
-        const doneProjects = document.querySelectorAll('#projectsList li .project-content del').length;
-        const projectRatio = `${doneProjects}/${totalProjects}`;
-        document.getElementById('projectRatio').textContent = projectRatio;
-    }
-
-    // Handle task done button clicks
-    document.querySelectorAll('.done-task-btn').forEach(function(button) {
-        button.onclick = function(event) {
-            event.preventDefault();
-            var taskId = this.getAttribute('data-task-id');
-            fetch(`/task/${taskId}/toggle_done/`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': '{{ csrf_token }}'
-                },
-                body: JSON.stringify({})
-            }).then(response => response.json()).then(data => {
-                if (data.success) {
-                    var taskElement = document.getElementById(`task-${taskId}`).querySelector('.task-content');
-                    if (data.is_done) {
-                        taskElement.innerHTML = `<del>${taskElement.innerHTML}</del>`;
-                    } else {
-                        taskElement.innerHTML = taskElement.textContent;
-                    }
-                    updateTaskRatio();
-                }
-            });
-        };
-    });
-
-    // Handle project done button clicks
-    document.querySelectorAll('.done-project-btn').forEach(function(button) {
-        button.onclick = function(event) {
-            event.preventDefault();
-            var projectId = this.getAttribute('data-project-id');
-            fetch(`/project/${projectId}/toggle_done/`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': '{{ csrf_token }}'
-                },
-                body: JSON.stringify({})
-            }).then(response => response.json()).then(data => {
-                if (data.success) {
-                    var projectElement = document.getElementById(`project-${projectId}`).querySelector('.project-content');
-                    if (data.is_done) {
-                        projectElement.innerHTML = `<del>${projectElement.innerHTML}</del>`;
-                    } else {
-                        projectElement.innerHTML = projectElement.textContent;
-                    }
-                    updateProjectRatio();
-                }
-            });
-        };
-    });
-
-    // Initial task and project ratio update
-    updateTaskRatio();
-    updateProjectRatio();
-
-    // Handle project edit button clicks
-    document.querySelectorAll('.edit-project-btn').forEach(function(button) {
-        button.onclick = function(event) {
-            event.preventDefault();
-            var projectId = this.getAttribute('data-project-id');
-            var projectElement = document.getElementById(`project-${projectId}`);
-            var projectContent = projectElement.querySelector('.project-content').textContent.split(' - ');
-            var projectTitle = projectContent[0];
-            var projectDescription = projectContent[1].split(' (Due: ')[0];
-            var projectDueDate = projectContent[1].split(' (Due: ')[1].replace(')', '');
-            
-            document.getElementById('editProjectTitle').value = projectTitle;
-            document.getElementById('editProjectDescription').value = projectDescription;
-            document.getElementById('editProjectDueDate').value = projectDueDate;
-            document.getElementById('editProjectForm').action = `/project/${projectId}/update/`;
-            document.getElementById('projectEditPopup').style.display = "block";
-        };
-    });
-
-    // Handle project delete button clicks
-    document.querySelectorAll('.delete-project-btn').forEach(function(button) {
-        button.onclick = function(event) {
-            event.preventDefault();
-            var projectId = this.getAttribute('data-project-id');
-            document.getElementById('deleteProjectForm').action = `/project/${projectId}/delete/`;
-            document.getElementById('projectDeletePopup').style.display = "block";
-        };
-    });
-
-    // Close popup elements
-    document.querySelectorAll('.popup .close').forEach(function(closeButton) {
-        closeButton.onclick = function() {
-            this.closest('.popup').style.display = 'none';
-        };
-    });
-
-    window.onclick = function(event) {
-        document.querySelectorAll('.popup').forEach(function(popup) {
-            if (event.target == popup) {
-                popup.style.display = "none";
-            }
-        });
-    };
-
-    // Note popup elements
-    var notePopup = document.getElementById("notePopup");
-    var noteBtn = document.getElementById("addNoteBtn");
-
-    noteBtn.onclick = function() {
-        notePopup.style.display = "block";
-    }
-
-    // Note edit popup elements
-    var noteEditPopup = document.getElementById("noteEditPopup");
-
-    // Note delete popup elements
-    var noteDeletePopup = document.getElementById("noteDeletePopup");
-    var cancelDeleteBtn = document.getElementById("cancelDeleteBtn");
-
-    cancelDeleteBtn.onclick = function() {
-        noteDeletePopup.style.display = "none";
-    }
-
-    // Handle note edit button clicks
-    document.querySelectorAll('.edit-note-btn').forEach(function(button) {
-        button.onclick = function(event) {
-            event.preventDefault();
-            var noteId = this.getAttribute('data-note-id');
-            var noteContent = this.parentElement.childNodes[0].textContent.trim();
-            document.getElementById('editNoteContent').value = noteContent;
-            document.getElementById('editNoteForm').action = `/note/${noteId}/update/`;
-            noteEditPopup.style.display = "block";
-        };
-    });
-
-    // Handle note delete button clicks
-    document.querySelectorAll('.delete-note-btn').forEach(function(button) {
-        button.onclick = function(event) {
-            event.preventDefault();
-            var noteId = this.getAttribute('data-note-id');
-            document.getElementById('deleteNoteForm').action = `/note/${noteId}/delete/`;
-            noteDeletePopup.style.display = "block";
-        };
-    });
-
-    // Task popup elements
-    var taskPopup = document.getElementById("taskPopup");
-    var taskBtn = document.getElementById("addTaskBtn");
-
-    taskBtn.onclick = function() {
-        taskPopup.style.display = "block";
-    }
-
-    // Task edit popup elements
-    var taskEditPopup = document.getElementById("taskEditPopup");
-
-    // Task delete popup elements
-    var taskDeletePopup = document.getElementById("taskDeletePopup");
-    var cancelTaskDeleteBtn = document.getElementById("cancelTaskDeleteBtn");
-
-    cancelTaskDeleteBtn.onclick = function() {
-        taskDeletePopup.style.display = "none";
-    }
-
-    // Handle task edit button clicks
-    document.querySelectorAll('.edit-task-btn').forEach(function(button) {
-        button.onclick = function(event) {
-            event.preventDefault();
-            var taskId = this.getAttribute('data-task-id');
-            var taskContent = this.parentElement.childNodes[0].textContent.trim();
-            document.getElementById('editTaskContent').value = taskContent;
-            document.getElementById('editTaskForm').action = `/task/${taskId}/update/`;
-            taskEditPopup.style.display = "block";
-        };
-    });
-
-    // Handle task delete button clicks
-    document.querySelectorAll('.delete-task-btn').forEach(function(button) {
-        button.onclick = function(event) {
-            event.preventDefault();
-            var taskId = this.getAttribute('data-task-id');
-            document.getElementById('deleteTaskForm').action = `/task/${taskId}/delete/`;
-            taskDeletePopup.style.display = "block";
-        };
-    });
-
-    // Handle Add Project Button click
-    var projectPopup = document.getElementById("projectPopup");
-    var projectBtn = document.getElementById("addProjectBtn");
+    document.addEventListener('DOMContentLoaded', function () {
+        function updateTaskRatio() {
+            const totalTasks = document.querySelectorAll('#tasksList li').length;
+            const doneTasks = document.querySelectorAll('#tasksList li .task-content del').length;
+            const taskRatio = `${doneTasks}/${totalTasks}`;
+            document.getElementById('taskRatio').textContent = taskRatio;
+        }
     
-    projectBtn.onclick = function() {
-        projectPopup.style.display = "block";
-    }
-
-    // Close Project Popup
-    var projectCloseBtn = projectPopup.getElementsByClassName("close")[0];
-    projectCloseBtn.onclick = function() {
-        projectPopup.style.display = "none";
-    }
-});
-</script>
+        function updateProjectRatio() {
+            const totalProjects = document.querySelectorAll('#projectsContainer .project-card').length;
+            const doneProjects = document.querySelectorAll('#projectsContainer .project-card del').length;
+            const projectRatio = `${doneProjects}/${totalProjects}`;
+            document.getElementById('projectRatio').textContent = projectRatio;
+        }
+    
+        // Handle task done button clicks
+        document.querySelectorAll('.done-task-btn').forEach(function(button) {
+            button.onclick = function(event) {
+                event.preventDefault();
+                var taskId = this.getAttribute('data-task-id');
+                fetch(`/task/${taskId}/toggle_done/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({})
+                }).then(response => response.json()).then(data => {
+                    if (data.success) {
+                        var taskElement = document.getElementById(`task-${taskId}`).querySelector('.task-content');
+                        if (data.is_done) {
+                            taskElement.innerHTML = `<del>${taskElement.innerHTML}</del>`;
+                        } else {
+                            taskElement.innerHTML = taskElement.textContent;
+                        }
+                        updateTaskRatio();
+                    }
+                });
+            };
+        });
+    
+        // Handle project done button clicks
+        document.querySelectorAll('.done-project-btn').forEach(function(button) {
+            button.onclick = function(event) {
+                event.preventDefault();
+                var projectId = this.getAttribute('data-project-id');
+                fetch(`/project/${projectId}/toggle_done/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({})
+                }).then(response => response.json()).then(data => {
+                    if (data.success) {
+                        var projectElement = document.getElementById(`project-${projectId}`).querySelector('.project-content');
+                        if (data.is_done) {
+                            projectElement.innerHTML = `<del>
+                                <div>${projectElement.querySelector('div:nth-child(1)').textContent}</div>
+                                <div>${projectElement.querySelector('div:nth-child(2)').textContent}</div>
+                                <div>${projectElement.querySelector('div:nth-child(3)').textContent}</div>
+                            </del>`;
+                        } else {
+                            var delContent = projectElement.querySelector('del');
+                            if (delContent) {
+                                var delDivs = delContent.querySelectorAll('div');
+                                projectElement.innerHTML = `
+                                    <div>${delDivs[0].textContent}</div>
+                                    <div>${delDivs[1].textContent}</div>
+                                    <div>${delDivs[2].textContent}</div>
+                                `;
+                            }
+                        }
+                        updateProjectRatio();
+                    }
+                });
+            };
+        });
+    
+        // Initial task and project ratio update
+        updateTaskRatio();
+        updateProjectRatio();
+    
+        // Handle project edit button clicks
+        document.querySelectorAll('.edit-project-btn').forEach(function(button) {
+            button.onclick = function(event) {
+                event.preventDefault();
+                var projectId = this.getAttribute('data-project-id');
+                var projectElement = document.getElementById(`project-${projectId}`);
+                var projectTitle = projectElement.querySelector('.project-content div:nth-child(1)').textContent;
+                var projectDescription = projectElement.querySelector('.project-content div:nth-child(2)').textContent;
+                var projectDueDate = projectElement.querySelector('.project-content div:nth-child(3)').textContent.replace('(Due: ', '').replace(')', '');
+                
+                document.getElementById('editProjectTitle').value = projectTitle;
+                document.getElementById('editProjectDescription').value = projectDescription;
+                document.getElementById('editProjectDueDate').value = projectDueDate;
+                document.getElementById('editProjectForm').action = `/project/${projectId}/update/`;
+                document.getElementById('projectEditPopup').style.display = "block";
+            };
+        });
+    
+        // Handle project delete button clicks
+        document.querySelectorAll('.delete-project-btn').forEach(function(button) {
+            button.onclick = function(event) {
+                event.preventDefault();
+                var projectId = this.getAttribute('data-project-id');
+                document.getElementById('deleteProjectForm').action = `/project/${projectId}/delete/`;
+                document.getElementById('projectDeletePopup').style.display = "block";
+            };
+        });
+    
+        // Close popup elements
+        document.querySelectorAll('.popup .close').forEach(function(closeButton) {
+            closeButton.onclick = function() {
+                this.closest('.popup').style.display = 'none';
+            };
+        });
+    
+        window.onclick = function(event) {
+            document.querySelectorAll('.popup').forEach(function(popup) {
+                if (event.target == popup) {
+                    popup.style.display = "none";
+                }
+            });
+        };
+    
+        // Note popup elements
+        var notePopup = document.getElementById("notePopup");
+        var noteBtn = document.getElementById("addNoteBtn");
+    
+        noteBtn.onclick = function() {
+            notePopup.style.display = "block";
+        }
+    
+        // Note edit popup elements
+        var noteEditPopup = document.getElementById("noteEditPopup");
+    
+        // Note delete popup elements
+        var noteDeletePopup = document.getElementById("noteDeletePopup");
+        var cancelDeleteBtn = document.getElementById("cancelDeleteBtn");
+    
+        cancelDeleteBtn.onclick = function() {
+            noteDeletePopup.style.display = "none";
+        }
+    
+        // Handle note edit button clicks
+        document.querySelectorAll('.edit-note-btn').forEach(function(button) {
+            button.onclick = function(event) {
+                event.preventDefault();
+                var noteId = this.getAttribute('data-note-id');
+                var noteContent = this.parentElement.parentElement.querySelector('.note-content').textContent.trim();
+                document.getElementById('editNoteContent').value = noteContent;
+                document.getElementById('editNoteForm').action = `/note/${noteId}/update/`;
+                noteEditPopup.style.display = "block";
+            };
+        });
+    
+        // Handle note delete button clicks
+        document.querySelectorAll('.delete-note-btn').forEach(function(button) {
+            button.onclick = function(event) {
+                event.preventDefault();
+                var noteId = this.getAttribute('data-note-id');
+                document.getElementById('deleteNoteForm').action = `/note/${noteId}/delete/`;
+                noteDeletePopup.style.display = "block";
+            };
+        });
+    
+        // Task popup elements
+        var taskPopup = document.getElementById("taskPopup");
+        var taskBtn = document.getElementById("addTaskBtn");
+    
+        taskBtn.onclick = function() {
+            taskPopup.style.display = "block";
+        }
+    
+        // Task edit popup elements
+        var taskEditPopup = document.getElementById("taskEditPopup");
+    
+        // Task delete popup elements
+        var taskDeletePopup = document.getElementById("taskDeletePopup");
+        var cancelTaskDeleteBtn = document.getElementById("cancelTaskDeleteBtn");
+    
+        cancelTaskDeleteBtn.onclick = function() {
+            taskDeletePopup.style.display = "none";
+        }
+    
+        // Handle task edit button clicks
+        document.querySelectorAll('.edit-task-btn').forEach(function(button) {
+            button.onclick = function(event) {
+                event.preventDefault();
+                var taskId = this.getAttribute('data-task-id');
+                var taskContent = this.parentElement.parentElement.querySelector('.task-content').textContent.trim();
+                document.getElementById('editTaskContent').value = taskContent;
+                document.getElementById('editTaskForm').action = `/task/${taskId}/update/`;
+                taskEditPopup.style.display = "block";
+            };
+        });
+    
+        // Handle task delete button clicks
+        document.querySelectorAll('.delete-task-btn').forEach(function(button) {
+            button.onclick = function(event) {
+                event.preventDefault();
+                var taskId = this.getAttribute('data-task-id');
+                document.getElementById('deleteTaskForm').action = `/task/${taskId}/delete/`;
+                taskDeletePopup.style.display = "block";
+            };
+        });
+    
+        // Handle Add Project Button click
+        var projectPopup = document.getElementById("projectPopup");
+        var projectBtn = document.getElementById("addProjectBtn");
+        
+        projectBtn.onclick = function() {
+            projectPopup.style.display = "block";
+        }
+    
+        // Close Project Popup
+        var projectCloseBtn = projectPopup.getElementsByClassName("close")[0];
+        projectCloseBtn.onclick = function() {
+            projectPopup.style.display = "none";
+        }
+    });
+    </script>
 {% endblock %}
+
+
+
+
 
 
 

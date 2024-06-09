@@ -1,46 +1,39 @@
-/* style.css
-.dropdown {
-    position: relative;
-    display: inline-block;
+/* Navbar background color */
+.navbar {
+    background-color: #E34532 !important;
 }
 
-.dropbtn {
-    background-color: #4CAF50;
-    color: white;
-    padding: 16px;
-    font-size: 16px;
-    border: none;
-    cursor: pointer;
+/* Navbar brand styling */
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+    color: #ffffff !important;
 }
 
-.dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: #f9f9f9;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 1;
+/* Navbar links styling */
+.navbar .nav-link {
+    color: #ffffff !important;
 }
 
-.dropdown-content a {
-    color: black;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
+.navbar .nav-link:hover {
+    color: #d4d4d4 !important;
 }
 
-.dropdown-content a:hover {
-    background-color: #f1f1f1;
+/* Dropdown menu background color */
+.dropdown-menu {
+    background-color: #E34532;
 }
 
-.dropdown:hover .dropdown-content {
-    display: block;
+/* Dropdown item styling */
+.dropdown-item {
+    color: #ffffff;
 }
 
-.dropdown:hover .dropbtn {
-    background-color: #3e8e41;
+.dropdown-item:hover {
+    background-color: #d63324;
 }
 
-
-
- */
+/* Search form input margin */
+.form-inline .form-control {
+    margin-right: 10px;
+}
