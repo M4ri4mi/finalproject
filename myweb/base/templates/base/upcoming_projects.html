@@ -1,0 +1,24 @@
+<!-- base/templates/base/upcoming_projects.html -->
+{% extends 'main.html' %}
+{% load static %}
+
+{% block title %}Upcoming Projects{% endblock %}
+
+{% block content %}
+<h1>Upcoming Projects</h1>
+{% if upcoming_projects %}
+    <ul>
+        {% for project in upcoming_projects %}
+        <li>
+            <strong>{{ project.title }}</strong><br>
+            {{ project.description }}<br>
+            Due Date: {{ project.due_date }}
+        </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No upcoming projects found.</p>
+{% endif %}
+{% endblock %}
+
+

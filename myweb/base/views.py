@@ -11,6 +11,7 @@ from datetime import date
 from django.http import JsonResponse
 import random
 from django.db.models import Q
+from django.utils import timezone
 
 
 def home(request):
@@ -234,6 +235,17 @@ def search_results(request):
         'projects': projects,
     })
 
+@login_required
+def overdue_projects(request):
+    current_date = timezone.now().date()
+    overdue_projects = Project.objects.filter(user=request.user, due_date__lt=current_date, is_done=False)
+    return render(request, 'base/overdue_projects.html', {'overdue_projects': overdue_projects})
+
+@login_required
+def upcoming_projects(request):
+    current_date = timezone.now().date()
+    upcoming_projects = Project.objects.filter(user=request.user, due_date__gte=current_date, is_done=False)
+    return render(request, 'base/upcoming_projects.html', {'upcoming_projects': upcoming_projects})
 
 
 
