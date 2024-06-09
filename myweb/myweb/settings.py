@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 
 # Base directory of the project
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -87,10 +88,12 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
+
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'base' / 'static']
+STATICFILES_DIRS = [BASE_DIR / 'base' / 'static',]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

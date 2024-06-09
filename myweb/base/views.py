@@ -16,10 +16,7 @@ from django.utils import timezone
 
 def home(request):
     if request.user.is_authenticated:
-        # Compute today's date
         today_date = date.today().strftime("%B %d, %Y")
-        print(f"Today's date with cache busting: {today_date}")
-
         notes = Note.objects.filter(user=request.user)
         tasks = Task.objects.filter(user=request.user)
         projects = Project.objects.filter(user=request.user)
