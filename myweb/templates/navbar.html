@@ -3,7 +3,8 @@
 <a href="{% url 'home' %}"><h1>HOME</h1></a>
 
 {% if request.user.is_authenticated %}
-    <h3>Hello {{ request.user.username }}</h3>
+    <a href="{% url 'profile' %}" class="profile-link"><h3>Hello {{ request.user.username }}</h3></a>
+
     <form action="{% url 'search_results' %}" method="get" style="display: inline;">
         <input type="text" name="q" placeholder="Search for something..." />
         <button type="submit">Search</button>
@@ -13,7 +14,6 @@
         <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             History
         </a>
-
         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
             <a class="dropdown-item" href="{% url 'overdue_projects' %}">Overdue Projects</a>
             <a class="dropdown-item" href="{% url 'upcoming_projects' %}">Upcoming Projects</a>
@@ -26,6 +26,12 @@
     <a href="{% url 'login' %}"><h1>LOGIN/SIGN UP</h1></a>
 {% endif %}
 <hr>
+
+
+
+
+
+
 
 
 

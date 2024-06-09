@@ -7,7 +7,7 @@ from .forms import NoteForm, TaskForm, ProfileForm, ProjectForm
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from datetime import date
+from datetime import date, timedelta
 from django.http import JsonResponse
 import random
 from django.db.models import Q
@@ -16,9 +16,10 @@ from django.utils import timezone
 
 def home(request):
     if request.user.is_authenticated:
-        notes = Note.objects.filter(user=request.user)
-        tasks = Task.objects.filter(user=request.user)
+        today_date = date.today()
+        tasks = Task.objects.filter(user=request.user, date_added=today_date)
         projects = Project.objects.filter(user=request.user)
+        notes = Note.objects.filter(user=request.user)
         note_form = NoteForm()
         task_form = TaskForm()
         project_form = ProjectForm()
@@ -37,7 +38,6 @@ def home(request):
                 if task_form.is_valid():
                     task = task_form.save(commit=False)
                     task.user = request.user
-                    task.date_added = date.today()  # Add date when task is added
                     task.save()
                     messages.success(request, 'Task created successfully')
                     return redirect('home')
@@ -58,7 +58,7 @@ def home(request):
                     messages.success(request, 'Project created successfully')
                     return redirect('home')
 
-        today_date = date.today().strftime("%B %d, %Y")
+        today_date_str = today_date.strftime("%B %d, %Y")
 
         return render(request, 'base/home.html', {
             'notes': notes,
@@ -67,7 +67,7 @@ def home(request):
             'note_form': note_form,
             'task_form': task_form,
             'project_form': project_form,
-            'today_date': today_date,
+            'today_date': today_date_str,
             'task_ratio': task_ratio,
             'project_ratio': project_ratio,
         })
